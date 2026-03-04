@@ -1,20 +1,13 @@
  "use client";
  
  import { useMemo } from "react";
- import { Suspense } from "react";
- import ReviewDetailsClient from "./client";
  import { useRouter, useSearchParams } from "next/navigation";
  import { Button } from "@/components/ui/button";
-import { getLastDigits } from "@/utils/string-utils";
-import SecureFooter from "@/components/common/secure-footer";
-import { countryFlagByName } from "@/app/(authenticated)/(client)/home/transfer/wire/data";
+ import { getLastDigits } from "@/utils/string-utils";
+ import SecureFooter from "@/components/common/secure-footer";
+ import { countryFlagByName } from "@/app/(authenticated)/(client)/home/transfer/wire/data";
  
- export default function ReviewDetailsPage() {
-   return (
-     <Suspense fallback={<div />} >
-       <ReviewDetailsClient />
-     </Suspense>
-   );
+ export default function ReviewDetailsClient() {
    const router = useRouter();
    const searchParams = useSearchParams();
  
@@ -28,11 +21,14 @@ import { countryFlagByName } from "@/app/(authenticated)/(client)/home/transfer/
    const state = useMemo(() => searchParams.get("state") || "", [searchParams]);
    const zipPostalCode = useMemo(() => searchParams.get("zipPostalCode") || "", [searchParams]);
    const routingNumber = useMemo(() => searchParams.get("routingNumber") || "", [searchParams]);
-   const accountNumber = useMemo(() => searchParams.get("accountNumber") || searchParams.get("recipientAccountNumber") || "", [searchParams]);
+   const accountNumber = useMemo(
+     () => searchParams.get("accountNumber") || searchParams.get("recipientAccountNumber") || "",
+     [searchParams]
+   );
    const swiftBic = useMemo(() => searchParams.get("swiftBic") || "", [searchParams]);
  
    const recipientFullName = [firstName, lastName].filter(Boolean).join(" ");
-  const maskedAccount = accountNumber ? `*****${getLastDigits(accountNumber, 4)}` : "—";
+   const maskedAccount = accountNumber ? `*****${getLastDigits(accountNumber, 4)}` : "—";
  
    const handleEditClick = () => {
      const params = new URLSearchParams();
@@ -55,46 +51,46 @@ import { countryFlagByName } from "@/app/(authenticated)/(client)/home/transfer/
      router.push(`${path}?${params.toString()}`);
    };
  
-  const handleAddClick = async () => {
-    const payload: any = {
-      country,
-      currency,
-      accountType: searchParams.get("accountType") || "Personal",
-      receiverAccount: searchParams.get("receiverAccount") || "Someone else's account",
-      firstName,
-      lastName,
-      nickName,
-      recipientAddress,
-      state,
-      city,
-      zipPostalCode,
-      recipientAccountNumber: accountNumber,
-    };
-    if (country === "United States") {
-      payload.routingNumber = routingNumber;
-    } else {
-      payload.swiftBic = swiftBic;
-    }
-    const res = await fetch("/api/me/recipients", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    }).catch(() => undefined);
-    let recipientId = "";
-    if (res && res.ok) {
-      try {
-        const json = await res.json();
-        recipientId = json?.id || "";
-      } catch {}
-    }
-    const params = new URLSearchParams();
-    if (recipientId) params.set("recipientId", recipientId);
-    if (country) params.set("country", country);
-    if (currency) params.set("currency", currency);
-    const fullName = [firstName, lastName].filter(Boolean).join(" ");
-    if (fullName) params.set("recipientName", fullName);
-    router.push(`/home/transfer/wire/send-money/choose-account?${params.toString()}`);
-  };
+   const handleAddClick = async () => {
+     const payload: any = {
+       country,
+       currency,
+       accountType: searchParams.get("accountType") || "Personal",
+       receiverAccount: searchParams.get("receiverAccount") || "Someone else's account",
+       firstName,
+       lastName,
+       nickName,
+       recipientAddress,
+       state,
+       city,
+       zipPostalCode,
+       recipientAccountNumber: accountNumber,
+     };
+     if (country === "United States") {
+       payload.routingNumber = routingNumber;
+     } else {
+       payload.swiftBic = swiftBic;
+     }
+     const res = await fetch("/api/me/recipients", {
+       method: "POST",
+       headers: { "Content-Type": "application/json" },
+       body: JSON.stringify(payload),
+     }).catch(() => undefined);
+     let recipientId = "";
+     if (res && res.ok) {
+       try {
+         const json = await res.json();
+         recipientId = json?.id || "";
+       } catch {}
+     }
+     const params = new URLSearchParams();
+     if (recipientId) params.set("recipientId", recipientId);
+     if (country) params.set("country", country);
+     if (currency) params.set("currency", currency);
+     const fullName = [firstName, lastName].filter(Boolean).join(" ");
+     if (fullName) params.set("recipientName", fullName);
+     router.push(`/home/transfer/wire/send-money/choose-account?${params.toString()}`);
+   };
  
    return (
      <div className="mx-auto max-w-screen-md px-4 pb-28 pt-20">
@@ -109,10 +105,10 @@ import { countryFlagByName } from "@/app/(authenticated)/(client)/home/transfer/
              <div className="mt-2 divide-y divide-gray-200">
                <div className="flex items-center justify-between py-2">
                  <span className="text-[0.95rem] text-gray-700">Send to</span>
-                <span className="flex items-center gap-2 text-[0.95rem] font-medium text-gray-900">
-                  <span>{country || "—"}</span>
-                  {country && <span className="text-xl leading-none">{countryFlagByName[country] || ""}</span>}
-                </span>
+                 <span className="flex items-center gap-2 text-[0.95rem] font-medium text-gray-900">
+                   <span>{country || "—"}</span>
+                   {country && <span className="text-xl leading-none">{countryFlagByName[country] || ""}</span>}
+                 </span>
                </div>
                <div className="flex items-center justify-between py-2">
                  <span className="text-[0.95rem] text-gray-700">Recipient</span>
@@ -178,8 +174,8 @@ import { countryFlagByName } from "@/app/(authenticated)/(client)/home/transfer/
          </div>
        </div>
  
-      <SecureFooter />
-
+       <SecureFooter />
+ 
        <div className="fixed bottom-0 left-0 right-0 mx-auto border-t border-gray-200 flex items-center justify-center py-2 px-4 sm:px-6 max-w-screen-md z-50 bg-white/50">
          <Button
            onClick={handleAddClick}

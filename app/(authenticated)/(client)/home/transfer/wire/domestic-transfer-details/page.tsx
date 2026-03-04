@@ -1,12 +1,19 @@
  "use client";
  
  import { useMemo, useState } from "react";
+ import { Suspense } from "react";
+ import DomesticTransferDetailsClient from "./client";
  import { useRouter, useSearchParams } from "next/navigation";
  import { Button } from "@/components/ui/button";
  import { Input } from "@/components/ui/input";
  import { GoLightBulb } from "react-icons/go";
  
  export default function DomesticTransferDetailsPage() {
+   return (
+     <Suspense fallback={<div />} >
+       <DomesticTransferDetailsClient />
+     </Suspense>
+   );
    const router = useRouter();
    const searchParams = useSearchParams();
  
