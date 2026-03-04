@@ -2,11 +2,9 @@
 import React, { useEffect, useState } from "react";
 import { RiInformation2Line } from "react-icons/ri";
 import { MdKeyboardArrowDown, MdKeyboardArrowUp } from "react-icons/md";
-
-const CreditCardHistory = () => {
-  const [showAccountNumber, setShowAccountNumber] = useState(false);
 import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/utils/string-utils";
+import { Lock, ChevronRight, Triangle } from "lucide-react";
 
 const CreditCardHistory = () => {
   const [visibleTransactions, setVisibleTransactions] = useState(10);
@@ -41,9 +39,6 @@ const CreditCardHistory = () => {
     load();
   }, []);
 
-  // const formatCurrency = (amount: number) =>
-  //   new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(amount);
-
   const limit = card?.limit ?? 0;
   const usedAmount = Math.max(0, Math.abs(card?.balance ?? 0));
   const availableCredit = Math.max(0, limit - usedAmount);
@@ -55,6 +50,7 @@ const CreditCardHistory = () => {
       (prevVisibleTransactions) => prevVisibleTransactions + 10,
     );
   };
+  
   return (
     <div className="pt-42 pb-15 w-full max-w-3xl mx-auto">
       <h1 className="text-[0.67rem] font-semibold flex justify-end px-8 pb-1">

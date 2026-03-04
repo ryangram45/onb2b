@@ -24,7 +24,7 @@ import { Label } from "@/components/ui/label";
 import { UserRole, UserRoleType } from "@/lib/constants/roles";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { UserPlus, X, CreditCard, Mail, User, KeyRound, Shield } from "lucide-react";
+import { X, CreditCard, Mail, User, KeyRound, Shield } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface CreateUserModalProps {

@@ -5,7 +5,6 @@
  import { Button } from "@/components/ui/button";
  import { Input } from "@/components/ui/input";
  import { GoLightBulb } from "react-icons/go";
-import SecureFooter from "@/components/common/secure-footer";
  
  export default function DomesticTransferDetailsPage() {
    const router = useRouter();

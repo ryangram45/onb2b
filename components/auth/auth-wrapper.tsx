@@ -3,7 +3,6 @@
 import { MdLock } from "react-icons/md";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 
 interface AuthWrapperProps {
   children: React.ReactNode;

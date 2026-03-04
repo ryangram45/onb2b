@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { HiOutlineBars3 } from "react-icons/hi2";
 import { BsCart3 } from "react-icons/bs";
 import { MdOutlineLogout } from "react-icons/md";
@@ -14,14 +14,10 @@ import { createPortal } from "react-dom";
 const HomeNavBar = () => {
   const [showDropDown, setShowDropDown] = useState(false);
   const [showLogoutPrompt, setShowLogoutPrompt] = useState(false);
-  const [mounted, setMounted] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
 
-  useEffect(() => {
-    //eslint-disable-next-line react-hooks/exhaustive-deps
-    setMounted(true);
-  }, []);
+  // No need for mounted check at all!
 
   const handleLogout = () => {
     // logout();
@@ -126,8 +122,8 @@ const HomeNavBar = () => {
         </AnimatePresence>
       </div>
 
-      {/* Logout confirmation modal*/}
-      {mounted && showLogoutPrompt && createPortal(
+      {/* Logout confirmation modal */}
+      {showLogoutPrompt && createPortal(
         <div className="fixed inset-0 z-80 flex items-center justify-center">
           <div className="absolute w-full h-full bg-black opacity-65" />
           <div className="bg-white p-6 rounded-sm shadow-lg max-w-xs w-full mx-4 relative z-10">

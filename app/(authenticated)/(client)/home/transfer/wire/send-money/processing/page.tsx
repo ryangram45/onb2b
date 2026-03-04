@@ -8,7 +8,7 @@ import {
   formatCurrency,
   generateConfirmationNumber,
 } from "@/utils/string-utils";
-import { countryFlagByName } from "@/app/(authenticated)/(client)/home/transfer/wire/data";
+ 
 
 type Recipient = {
   id: string;
@@ -26,12 +26,10 @@ export default function WireProcessingPage() {
   const searchParameters = useSearchParams();
 
   const recipientId = searchParameters.get("recipientId") || "";
-  const country = searchParameters.get("country") || "";
-  const currency = searchParameters.get("currency") || "USD";
-  const accountId = searchParameters.get("accountId") || "";
+ 
   const accountLabel = searchParameters.get("accountLabel") || "";
   const amountParam = searchParameters.get("amount") || "0";
-  const note = searchParameters.get("note") || "";
+ 
 
   const amountNumber = useMemo(() => {
     const n = parseFloat(String(amountParam));
@@ -74,7 +72,7 @@ export default function WireProcessingPage() {
     month: "short",
     day: "numeric",
   });
-  const totalCost = amountNumber + 30;
+ 
 
   const fullName = recipient
     ? `${recipient.firstName} ${recipient.lastName}`.trim()

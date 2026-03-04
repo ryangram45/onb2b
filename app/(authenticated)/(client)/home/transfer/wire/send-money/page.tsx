@@ -3,10 +3,6 @@
  import { useEffect, useState } from "react";
  import { useRouter } from "next/navigation";
  import { Button } from "@/components/ui/button";
- import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
- import { Input } from "@/components/ui/input";
- import { Label } from "@/components/ui/label";
- import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
  import { Plus } from "lucide-react";
  
  type Recipient = {
@@ -29,21 +25,6 @@
    const router = useRouter();
    const [recipients, setRecipients] = useState<Recipient[]>([]);
    const [selectedId, setSelectedId] = useState<string>("");
-   const [open, setOpen] = useState(false);
-   const [saving, setSaving] = useState(false);
- 
-   const [country, setCountry] = useState("");
-   const [currency, setCurrency] = useState<"INR" | "EUR" | "USD" | undefined>();
-   const [accountType, setAccountType] = useState<"Personal" | "Business" | undefined>();
-   const [receiverAccount, setReceiverAccount] = useState<"My account" | "Someone else's account" | undefined>();
-   const [firstName, setFirstName] = useState("");
-   const [lastName, setLastName] = useState("");
-   const [nickName, setNickName] = useState("");
-   const [recipientAddress, setRecipientAddress] = useState("");
-   const [city, setCity] = useState("");
-   const [zipPostalCode, setZipPostalCode] = useState("");
-   const [swiftBic, setSwiftBic] = useState("");
-   const [recipientAccountNumber, setRecipientAccountNumber] = useState("");
  
    useEffect(() => {
      const load = async () => {
@@ -60,52 +41,6 @@
  
    const canProceed = Boolean(selectedId);
  
-   const saveRecipient = async () => {
-     setSaving(true);
-     try {
-       const res = await fetch("/api/me/recipients", {
-         method: "POST",
-         headers: { "Content-Type": "application/json" },
-         body: JSON.stringify({
-           country,
-           currency,
-           accountType,
-           receiverAccount,
-           firstName,
-           lastName,
-           nickName: nickName || undefined,
-           recipientAddress,
-           city,
-           zipPostalCode,
-           swiftBic,
-           recipientAccountNumber,
-         }),
-       });
-       if (res.ok) {
-         const { id } = await res.json();
-         const newItem: Recipient = {
-           id,
-           country,
-           currency: currency!,
-           accountType: accountType!,
-           receiverAccount: receiverAccount!,
-           firstName,
-           lastName,
-           nickName: nickName || undefined,
-           recipientAddress,
-           city,
-           zipPostalCode,
-           swiftBic,
-           recipientAccountNumber,
-         };
-         setRecipients((prev) => [newItem, ...prev]);
-         setSelectedId(id);
-         setOpen(false);
-       }
-     } finally {
-       setSaving(false);
-     }
-   };
  
    return (
      <div className="mx-auto max-w-screen-md px-4 pb-28 pt-14">

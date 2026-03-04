@@ -9,7 +9,7 @@ interface AdminDashboardClientProps {
   users: any[];
 }
 
-export default function AdminDashboardClient({ metrics, users }: AdminDashboardClientProps) {
+export default function AdminDashboardClient({}: AdminDashboardClientProps) {
   const [createUserOpen, setCreateUserOpen] = useState(false);
 
   return (
