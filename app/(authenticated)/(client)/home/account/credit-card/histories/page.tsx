@@ -1,7 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { RiInformation2Line } from "react-icons/ri";
-import { MdKeyboardArrowDown, MdKeyboardArrowUp } from "react-icons/md";
 import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/utils/string-utils";
 import { Lock, ChevronRight, Triangle } from "lucide-react";
