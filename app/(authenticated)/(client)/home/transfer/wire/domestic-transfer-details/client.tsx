@@ -96,7 +96,7 @@
                  setEnteredAccountNumber(sanitized);
                }}
                placeholder="Account number"
-               className="w-full text-left border-0 border-b border-gray-300 rounded-none shadow-none outline-none focus-visible:ring-0 focus-visible	border-b focus-visible	border-onb2b-blue-950 bg-transparent placeholder:text-onb2b-blue-950 placeholder:font-medium caret-onb2b-blue-950 transition-colors px-0.5"
+               className="w-full text-left border-0 border-b border-gray-300 rounded-none shadow-none outline-none focus-visible:ring-0 focus-visible:border-b focus-visible:border-onb2b-blue-950 bg-transparent placeholder:text-onb2b-blue-950 placeholder:font-medium caret-onb2b-blue-950 transition-colors px-0.5"
                maxLength={34}
                autoComplete="off"
                autoCapitalize="none"
@@ -112,7 +112,7 @@
                  setEnteredConfirmedAccountNumber(sanitized);
                }}
                placeholder="Confirm account"
-               className="w-full text-left border-0 border-b border-gray-300 rounded-none shadow-none outline-none focus-visible:ring-0 focus-visible	border-b focus-visible	border-onb2b-blue-950 bg-transparent placeholder:text-onb2b-blue-950 placeholder:font-medium caret-onb2b-blue-950 transition-colors px-0.5"
+               className="w-full text-left border-0 border-b border-gray-300 rounded-none shadow-none outline-none focus-visible:ring-0 focus-visible:border-b focus-visible:border-onb2b-blue-950 bg-transparent placeholder:text-onb2b-blue-950 placeholder:font-medium caret-onb2b-blue-950 transition-colors px-0.5"
                maxLength={34}
                autoComplete="off"
                autoCapitalize="none"

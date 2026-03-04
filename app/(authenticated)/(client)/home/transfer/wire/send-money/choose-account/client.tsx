@@ -211,7 +211,7 @@
                      <span className="text-[0.95rem] text-gray-700">Transfer fees</span>
                      <span className="text-gray-900">$30.00</span>
                    </div>
-                   <div className="flex items-center justify_between py-3 border-b border-gray-200">
+                   <div className="flex items-center justify-between py-3 border-b border-gray-200">
                      <span className="text-[0.95rem] text-gray-700">Transfer amount</span>
                      <span className="text-gray-900">
                        {formatCurrency(numericAmount)} USD
