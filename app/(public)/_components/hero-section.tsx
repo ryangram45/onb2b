@@ -44,10 +44,7 @@ export default function HeroSection() {
 
           {/* Search */}
           <div className="relative w-64 max-w-xs">
-            <Input
-              placeholder="Search"
-              className="pr-10 rounded-sm bg-white"
-            />
+            <Input placeholder="Search" className="pr-10 rounded-sm bg-white" />
             <Search className="border-l absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
           </div>
         </div>
@@ -57,7 +54,14 @@ export default function HeroSection() {
           <ul className="flex flex-wrap gap-6 lg:gap-8 text-lg font-normal items-center tracking-wide">
             {navItems.map((item) => (
               <li key={item}>
-                <DropdownMenu>
+                <a
+                  href="#"
+                  className="inline-flex items-center gap-1 text-muted-foreground hover:text-onb2b-blue-700 transition-colors"
+                >
+                  {item}
+                  <ChevronDown className="h-4 w-4 opacity-70" />
+                </a>
+                {/* <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <button className="inline-flex items-center gap-1 text-muted-foreground hover:text-onb2b-blue-700 transition-colors">
                       {item}
@@ -69,7 +73,7 @@ export default function HeroSection() {
                     <DropdownMenuItem>Option 2 for {item}</DropdownMenuItem>
                     <DropdownMenuItem>Option 3 for {item}</DropdownMenuItem>
                   </DropdownMenuContent>
-                </DropdownMenu>
+                </DropdownMenu> */}
               </li>
             ))}
           </ul>
@@ -230,22 +234,38 @@ export default function HeroSection() {
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-4">
-            <Button asChild variant="whiteGhost" className="w-full h-auto py-2 rounded-xl">
+            <Button
+              asChild
+              variant="whiteGhost"
+              className="w-full h-auto py-2 rounded-xl"
+            >
               <a href="#" className="text-onb2b-blue-900 font-bold">
                 $200 online bonus offer
               </a>
             </Button>
-            <Button asChild variant="whiteGhost" className="w-full h-auto py-2 rounded-xl">
+            <Button
+              asChild
+              variant="whiteGhost"
+              className="w-full h-auto py-2 rounded-xl"
+            >
               <a href="#" className="text-onb2b-blue-900 font-bold">
                 $200 online bonus offer
               </a>
             </Button>
-            <Button asChild variant="whiteGhost" className="w-full h-auto py-2 rounded-xl">
+            <Button
+              asChild
+              variant="whiteGhost"
+              className="w-full h-auto py-2 rounded-xl"
+            >
               <a href="#" className="text-onb2b-blue-900 font-bold">
                 25,000 online bonus points offer
               </a>
             </Button>
-            <Button asChild variant="whiteGhost" className="w-full h-auto py-2 rounded-xl">
+            <Button
+              asChild
+              variant="whiteGhost"
+              className="w-full h-auto py-2 rounded-xl"
+            >
               <a href="#" className="text-onb2b-blue-900 font-bold">
                 Intro APR offer for 18 billing cycles
               </a>
