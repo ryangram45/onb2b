@@ -32,9 +32,10 @@ export function ActivityChart() {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="h-[300px] w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={data}>
+        {/* Add a wrapper with min-height to ensure the container has dimensions */}
+        <div style={{ minHeight: '300px', width: '100%' }}>
+          <ResponsiveContainer width="100%" height={300}>
+            <AreaChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
               <defs>
                 <linearGradient id="userGradient" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor="#3f42ff" stopOpacity={0.3}/>
