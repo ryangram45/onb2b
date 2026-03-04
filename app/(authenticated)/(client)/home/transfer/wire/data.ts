@@ -1,0 +1,15 @@
+ export const countryFlagByName: Record<string, string> = {
+   "United States": "🇺🇸",
+   India: "🇮🇳",
+   Mexico: "🇲🇽",
+   Canada: "🇨🇦",
+   "Great Britain": "🇬🇧",
+   China: "🇨🇳",
+   Spain: "🇪🇸",
+   Germany: "🇩🇪",
+   France: "🇫🇷",
+   Korea: "🇰🇷",
+   Philippines: "🇵🇭",
+   Italy: "🇮🇹",
+   Colombia: "🇨🇴",
+ };
