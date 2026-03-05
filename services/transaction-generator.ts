@@ -6,13 +6,6 @@ import { DEBIT_MERCHANTS_BY_CATEGORY, INCOME_SOURCES } from "@/lib/simulation/ba
 const randomAmount = (min: number, max: number) => Math.random() * (max - min) + min;
 const getRandomElement = <T>(arr: T[]): T => arr[Math.floor(Math.random() * arr.length)];
 
-const getBalanceTier = (balance: number) => {
-  if (balance < 2000) return "LOW";
-  if (balance < 50000) return "MEDIUM";
-  if (balance < 1000000) return "HIGH";
-  return "ULTRA_HIGH";
-};
-
 // --- Simulation Core ---
 
 interface GenerateHistoryArgs {
@@ -27,88 +20,65 @@ export async function generateBankHistory(args: GenerateHistoryArgs) {
 
   await Transaction.deleteMany({ bankAccountId });
 
-  let currentBalance = balance;
   const transactions: any[] = [];
-  const purchaseHistory: any[] = [];
 
+  // 1. Schedule major credit events first
   for (let day = new Date(startDate); day <= endDate; day.setDate(day.getDate() + 1)) {
     const currentDate = new Date(day);
-    const tier = getBalanceTier(currentBalance);
-    let dailyTransactionCount = 0;
 
-    const attemptDebit = (category: keyof typeof DEBIT_MERCHANTS_BY_CATEGORY, probability: number) => {
-      if (dailyTransactionCount >= 5 || Math.random() > probability) return;
-
-      const merchants = DEBIT_MERCHANTS_BY_CATEGORY[category];
-      const merchant = getRandomElement(merchants);
-      const amount = randomAmount(merchant.min, merchant.max);
-
-      if (currentBalance - amount < 0) return; // Insufficient funds
-
-      currentBalance -= amount;
-      const newTx = {
-        bankAccountId,
-        date: currentDate,
-        amount: -amount,
-        description: `${merchant.name.toUpperCase()} ${merchant.descriptor()}`,
-        category: category,
-        currentBalance,
-      };
-      transactions.push(newTx);
-      purchaseHistory.push(newTx);
-      dailyTransactionCount++;
-    };
-
-    const attemptCredit = (source: keyof typeof INCOME_SOURCES, probability: number) => {
-        if (Math.random() > probability) return;
-        const income = INCOME_SOURCES[source];
-        const amount = randomAmount(income.min, income.max);
-        currentBalance += amount;
-        transactions.push({ bankAccountId, date: currentDate, amount, description: income.descriptor(), category: "Deposit", currentBalance });
+    // Guaranteed Payroll & Interest
+    if (currentDate.getDate() === 1 || currentDate.getDate() === 15) {
+      const income = INCOME_SOURCES.Payroll;
+      transactions.push({ date: currentDate, amount: randomAmount(income.min, income.max), description: income.descriptor(), category: "Deposit" });
+    }
+    if (currentDate.getDate() === 28) {
+      const income = INCOME_SOURCES.Interest;
+      transactions.push({ date: currentDate, amount: randomAmount(income.min, income.max), description: income.descriptor(), category: "Deposit" });
     }
 
-    // --- Income Generation ---
-    if (currentDate.getDate() === 1 || currentDate.getDate() === 15) attemptCredit("Payroll", 1.0);
-    if (currentDate.getDate() === 28) attemptCredit("Interest", 1.0);
-    attemptCredit("ACH_Transfer", 0.03);
-    attemptCredit("Zelle", 0.05);
-    attemptCredit("Wire_Transfer", tier === "HIGH" || tier === "ULTRA_HIGH" ? 0.01 : 0); // Wires only for high balance
-
-    // --- Spending Generation (Probabilities scaled by balance tier) ---
-    const probabilities = {
-      LOW: { Dining: 0.2, Gas: 0.5, Groceries: 0.6, Shopping: 0.05 },
-      MEDIUM: { Dining: 0.5, Gas: 0.6, Groceries: 0.7, Shopping: 0.2 },
-      HIGH: { Dining: 0.7, Gas: 0.7, Groceries: 0.8, Shopping: 0.4 },
-      ULTRA_HIGH: { Dining: 0.8, Gas: 0.8, Groceries: 0.9, Shopping: 0.6 },
-    };
-
-    attemptDebit("Dining", probabilities[tier].Dining);
-    attemptDebit("Gas", probabilities[tier].Gas);
-    attemptDebit("Groceries", probabilities[tier].Groceries);
-    attemptDebit("Shopping", probabilities[tier].Shopping);
-
-    // --- Bill Payments (Fixed Dates) ---
-    if (currentDate.getDate() === 5) attemptDebit("Utility", 1.0);
-    if (currentDate.getDate() === 10) attemptDebit("Streaming", 1.0);
-
-    // --- Refunds ---
-    if (Math.random() < 0.02 && purchaseHistory.length > 0) {
-        const purchaseToRefund = getRandomElement(purchaseHistory.filter(p => (currentDate.getTime() - new Date(p.date).getTime()) / (1000 * 3600 * 24) > 3));
-        if (purchaseToRefund) {
-            const refundAmount = randomAmount(1, -purchaseToRefund.amount);
-            currentBalance += refundAmount;
-            transactions.push({ bankAccountId, date: currentDate, amount: refundAmount, description: `REFUND: ${purchaseToRefund.description}`, category: "Refund", currentBalance });
-        }
+    // Probabilistic Major Credits (Wires, ACH, Zelle)
+    if (Math.random() < 0.15) { // ~15% chance each day for one of these
+        const sourceType = getRandomElement(["Wire_Transfer", "ACH_Transfer", "Zelle"]);
+        const income = INCOME_SOURCES[sourceType as keyof typeof INCOME_SOURCES];
+        transactions.push({ date: currentDate, amount: randomAmount(income.min, income.max), description: income.descriptor(), category: "Deposit" });
     }
   }
 
+  // 2. Sprinkle in debit events between the credits
+  for (let day = new Date(startDate); day <= endDate; day.setDate(day.getDate() + 1)) {
+    const currentDate = new Date(day);
+    let dailyDebits = 0;
+
+    // Utility and Subscription Bills on fixed days
+    if (currentDate.getDate() === 5) {
+        const merchant = DEBIT_MERCHANTS_BY_CATEGORY.Utility[0];
+        transactions.push({ date: currentDate, amount: -randomAmount(merchant.min, merchant.max), description: `${merchant.name.toUpperCase()} ${merchant.descriptor()}`, category: "Utility" });
+    }
+    if (currentDate.getDate() === 10) {
+        const merchant = DEBIT_MERCHANTS_BY_CATEGORY.Streaming[0];
+        transactions.push({ date: currentDate, amount: -randomAmount(merchant.min, merchant.max), description: `${merchant.name.toUpperCase()} ${merchant.descriptor()}`, category: "Streaming" });
+    }
+
+    // Daily spending, but with much lower probability
+    const maxDailyDebits = 2;
+    if (Math.random() < 0.7 && dailyDebits < maxDailyDebits) { // 70% chance of any spending
+        const category = getRandomElement(["Dining", "Gas", "Groceries", "Shopping"]);
+        const merchants = DEBIT_MERCHANTS_BY_CATEGORY[category as keyof typeof DEBIT_MERCHANTS_BY_CATEGORY];
+        const merchant = getRandomElement(merchants);
+        transactions.push({ date: currentDate, amount: -randomAmount(merchant.min, merchant.max), description: `${merchant.name.toUpperCase()} ${merchant.descriptor()}`, category });
+        dailyDebits++;
+    }
+  }
+
+  // 3. Sort all transactions by date
   transactions.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
-  // Final balance recalculation for accuracy
+  // 4. Calculate running balance and save
   let runningBalance = balance;
   for (const tx of transactions) {
     runningBalance += tx.amount;
     tx.currentBalance = runningBalance;
+    tx.bankAccountId = bankAccountId;
   }
 
   if (transactions.length > 0) {
