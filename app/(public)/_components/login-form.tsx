@@ -51,7 +51,11 @@ export function LoginForm({ className }: LoginFormProps) {
     });
 
     if (!response || response.error) {
-      toast("Incorrect user ID or password");
+      if (response?.error === "Your account is currently inactive. Please contact support.") {
+        toast.error(response.error);
+      } else {
+        toast.error("Incorrect user ID or password");
+      }
       return;
     }
 

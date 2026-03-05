@@ -35,6 +35,11 @@ export async function POST(request: Request) {
 
     const data = validateRequestSchema.data;
 
+    // Normalize data
+    data.firstName = data.firstName.charAt(0).toUpperCase() + data.firstName.slice(1).toLowerCase();
+    data.lastName = data.lastName.charAt(0).toUpperCase() + data.lastName.slice(1).toLowerCase();
+    data.email = data.email.toLowerCase();
+
     await dbConnect();
 
     const existing = await User.findOne({

@@ -34,6 +34,10 @@ export const authOptions: AuthOptions = {
         const user = await User.findOne({ userId: inputId });
         if (!user) return null;
 
+        if (!user.isActive) {
+          throw new Error("Your account is currently inactive. Please contact support.");
+        }
+
         const isValid = await bcrypt.compare(password, user.password);
         if (!isValid) return null;
 
