@@ -17,6 +17,7 @@
        list.map((r) => ({
          id: r._id.toString(),
          country: r.country,
+         countryCode: r.countryCode,
          currency: r.currency,
          accountType: r.accountType,
          receiverAccount: r.receiverAccount,

@@ -4,6 +4,13 @@
    {
      userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true, index: true },
      country: { type: String, required: true },
+     countryCode: {
+        type: String,
+        required: true,
+        uppercase: true,
+        minlength: 2,
+        maxlength: 2,
+     },
      currency: { type: String, enum: ["INR", "EUR", "USD"], required: true },
      accountType: { type: String, enum: ["Personal", "Business"], required: true },
      receiverAccount: { type: String, enum: ["My account", "Someone else's account"], required: true },

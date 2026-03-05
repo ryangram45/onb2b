@@ -3,35 +3,23 @@
  import { useState } from "react";
  import { useRouter } from "next/navigation";
  import { Button } from "@/components/ui/button";
+ import { countries } from "@/lib/countries";
  
- type Country = { name: string; flag: string };
+ type Country = { name: string; code: string; flag: string };
  
- const topCountry: Country = { name: "United States", flag: "🇺🇸" };
- const countries: Country[] = [
-   { name: "India", flag: "🇮🇳" },
-   { name: "Mexico", flag: "🇲🇽" },
-   { name: "Canada", flag: "🇨🇦" },
-   { name: "Great Britain", flag: "🇬🇧" },
-   { name: "China", flag: "🇨🇳" },
-   { name: "Spain", flag: "🇪🇸" },
-   { name: "Germany", flag: "🇩🇪" },
-   { name: "France", flag: "🇫🇷" },
-   { name: "Korea", flag: "🇰🇷" },
-   { name: "Philippines", flag: "🇵🇭" },
-   { name: "Italy", flag: "🇮🇹" },
-   { name: "Colombia", flag: "🇨🇴" },
- ];
+ const topCountry: Country = countries.find(c => c.code === "US")!;
+ const otherCountries: Country[] = countries.filter(c => c.code !== "US");
  
  export default function CountryPage() {
    const router = useRouter();
-   const [selected, setSelected] = useState<string>("");
+   const [selected, setSelected] = useState<Country | null>(null);
  
    return (
      <div className="mx-auto max-w-screen-md px-4 pb-28 pt-20">
        <div className="bg-white rounded-lg p-5 sm:p-6">
          <div
-           className={`flex items-center justify-between shadow-md shadow-gray-200/70 rounded-lg p-3 cursor-pointer ${selected === topCountry.name ? "ring-2 ring-onb2b-blue-950" : ""}`}
-           onClick={() => setSelected(topCountry.name)}
+           className={`flex items-center justify-between shadow-md shadow-gray-200/70 rounded-lg p-3 cursor-pointer ${selected?.code === topCountry.code ? "ring-2 ring-onb2b-blue-950" : ""}`}
+           onClick={() => setSelected(topCountry)}
          >
            <div className="flex items-center gap-5">
              <span className="text-2xl leading-none">{topCountry.flag}</span>
@@ -40,11 +28,11 @@
          </div>
  
          <div className="grid grid-cols-2 gap-3 mt-4">
-           {countries.map((c) => (
+           {otherCountries.map((c) => (
              <div
                key={c.name}
-               className={`flex items-center justify-between shadow-md shadow-gray-200/70 rounded-lg p-3 cursor-pointer ${selected === c.name ? "ring-2 ring-onb2b-blue-950" : ""}`}
-               onClick={() => setSelected(c.name)}
+               className={`flex items-center justify-between shadow-md shadow-gray-200/70 rounded-lg p-3 cursor-pointer ${selected?.code === c.code ? "ring-2 ring-onb2b-blue-950" : ""}`}
+               onClick={() => setSelected(c)}
              >
                <div className="flex items-center gap-3">
                  <span className="text-2xl leading-none">{c.flag}</span>
@@ -65,7 +53,7 @@
          </Button>
         <Button
           disabled={!selected}
-          onClick={() => router.push(`/home/transfer/wire/currency?country=${encodeURIComponent(selected)}`)}
+          onClick={() => router.push(`/home/transfer/wire/currency?country=${encodeURIComponent(selected!.name)}&countryCode=${selected!.code}`)}
            className="flex-1 rounded-full bg-onb2b-blue-950 font-semibold tracking-wide hover:bg-onb2b-blue-1000 cursor-pointer"
          >
            NEXT

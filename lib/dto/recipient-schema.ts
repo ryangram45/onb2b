@@ -3,6 +3,7 @@
 export const recipientSchema = z
   .object({
     country: z.string().min(2),
+    countryCode: z.string().length(2).toUpperCase(),
     currency: z.enum(["INR", "EUR", "USD"]),
     accountType: z.enum(["Personal", "Business"]),
     receiverAccount: z.enum(["My account", "Someone else's account"]),

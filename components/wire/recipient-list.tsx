@@ -11,6 +11,7 @@ const getInitials = (firstName: string, lastName: string) => {
 type Recipient = {
   id: string;
   country: string;
+  countryCode: string;
   firstName: string;
   lastName: string;
 };
@@ -20,11 +21,11 @@ const RecipientItem = ({ recipient, selected, onSelect }: { recipient: Recipient
     className={`text-center cursor-pointer p-2 rounded-lg`}
     onClick={onSelect}
   >
-    <div className={`relative w-16 h-16 mx-auto rounded-full flex items-center justify-center text-xl font-bold ${selected ? 'bg-onb2b-blue-900 text-white' : 'bg-gray-200 text-gray-600'}`}>
+    <div className={`relative w-12 h-12 sm:w-16 sm:h-16 mx-auto rounded-full flex items-center justify-center text-lg sm:text-xl font-bold ${selected ? 'bg-onb2b-blue-900 text-white' : 'bg-gray-200/70 text-white'}`}>
       {getInitials(recipient.firstName, recipient.lastName)}
-      <img src={`https://flagcdn.com/w20/${recipient.country.toLowerCase()}.png`} alt={recipient.country} className="absolute bottom-0 right-0 w-5 h-5 rounded-full border-2 border-white" />
+      <img src={`https://flagcdn.com/w20/${(recipient.countryCode || 'us').toLowerCase()}.png`} alt={recipient.country} className="absolute bottom-0 right-0 w-4 h-4 sm:w-5 sm:h-5 rounded-full border-2 border-white" />
     </div>
-    <p className="mt-2 text-sm font-medium">{`${recipient.firstName} ${recipient.lastName}`}</p>
+    <p className="mt-2 text-xs sm:text-sm font-medium text-onb2b-blue-900/80">{`${recipient.firstName} ${recipient.lastName}`}</p>
   </div>
 );
 
