@@ -10,6 +10,7 @@ import Link from "next/link";
 import Menu from "@/components/menu/menu";
 import { Button } from "@/components/ui/button"
 import { createPortal } from "react-dom";
+import { signOut } from "next-auth/react";
 
 const HomeNavBar = () => {
   const [showDropDown, setShowDropDown] = useState(false);
@@ -17,10 +18,9 @@ const HomeNavBar = () => {
   const router = useRouter();
   const pathname = usePathname();
 
-  // No need for mounted check at all!
 
   const handleLogout = () => {
-    // logout();
+    signOut();
     setShowLogoutPrompt(false);
     router.push("/");
   };
