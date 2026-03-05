@@ -197,6 +197,7 @@ export default function CreateUserModal({ open, onOpenChange }: CreateUserModalP
               <Label htmlFor="creditCard.cardName" className="flex items-center gap-2">
                 <CreditCard className="h-4 w-4 text-onb2b-blue-600" />
                 Credit Card Display Name
+                i.e<span className="italic text-xs">Use “Doc” as the display name, or look up the cardholder name online specifically boa card names .</span>
               </Label>
               <Input
                 id="creditCard.cardName"
