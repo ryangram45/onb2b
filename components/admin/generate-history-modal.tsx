@@ -90,6 +90,12 @@ export default function GenerateHistoryModal({
           Select date range to generate {historyType} for {userName}
         </p>
 
+        {type === "card" && (
+          <p className="text-xs text-yellow-600 bg-yellow-50 border border-yellow-200 rounded-md p-2">
+            Warning: The starting balance should not exceed the user's credit limit. Exceeding the limit may lead to unrealistic transaction history.
+          </p>
+        )}
+
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
             <label htmlFor="balance" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Balance</label>

@@ -89,7 +89,7 @@ export async function POST(request: Request) {
             cardName,
             cardNumber:  generateCreditCardNumber(),
             balance: 0,
-            limit: 5000,
+            limit: 20000, // Updated limit as per new requirement
         }
 
         await CreditCard.create(

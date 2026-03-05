@@ -198,10 +198,9 @@ export default function CreateUserModal({ open, onOpenChange }: CreateUserModalP
                 <CreditCard className="h-4 w-4 text-onb2b-blue-600" />
                 Credit Card Display Name
               </Label>
-                <p>i.e {" "}<span className="italic text-xs font-light text-onb2b-blue-800">Use “Doc” as the display name, or look up the cardholder name online specifically boa card names .</span></p>
               <Input
                 id="creditCard.cardName"
-                placeholder="e.g. Visa Personal"
+                placeholder="e.g. Doc, Unlimited Cash Rewards"
                 {...register("creditCard.cardName")}
                 className={cn(
                   inputBase,

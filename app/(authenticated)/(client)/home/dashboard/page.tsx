@@ -33,6 +33,14 @@ const Dashboard = () => {
         const last4 = bank?.advPlusAccountNumber ? getLastDigits(bank.advPlusAccountNumber) : "—";
         const balance = bank ? formatCurrency(bank.balance ?? 0) : "$0.00";
 
+        const twoDaysAgo = new Date();
+        twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
+        const formattedDate = twoDaysAgo.toLocaleDateString("en-US", {
+          month: "2-digit",
+          day: "2-digit",
+          year: "numeric",
+        });
+
         const items: Tile[] = [
           {
             logo: "/images/Adv Plus Banking.svg",
@@ -42,15 +50,15 @@ const Dashboard = () => {
           },
           {
             logo: "/images/AverageSpend.svg",
-            title: "On Average You Speed",
+            title: "On Average You Spend",
             balance: "$1,523",
             description: "More Than You Deposit",
           },
           {
             logo: "/images/FICOscore.svg",
             title: "My FICO® Score",
-            balance: "$560",
-            description: "As of 02/20/2025",
+            balance: "$760",
+            description: `As of ${formattedDate}`,
           },
           {
             logo: "/images/bank-ameri.svg",

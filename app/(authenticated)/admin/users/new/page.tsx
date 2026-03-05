@@ -79,10 +79,9 @@ export default function CreateUserPage() {
 
       <div>
         <Label htmlFor="creditCard.cardName">Credit Card Display Name </Label>
-        <p>i.e {" "}<span className="italic text-xs font-light text-onb2b-blue-800">Use “Doc” as the display name, or look up the cardholder name online specifically boa card names .</span></p>
         <Input
           id="creditCard.cardName"
-          placeholder="e.g. Visa Personal"
+          placeholder="e.g. Doc, Unlimited Cash Rewards"
           {...register("creditCard.cardName")}
         />
         {errors.creditCard?.cardName && (

@@ -38,9 +38,8 @@ export async function POST(
 
   await generateCardHistory({
     creditCardId: creditCard._id.toString(),
-    balance,
-    startDate: start,
-    endDate: end,
+    creditLimit: creditCard.limit,
+    userId: id,
   });
 
   return NextResponse.json({ message: "Card history generated" });
