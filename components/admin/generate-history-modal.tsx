@@ -92,7 +92,7 @@ export default function GenerateHistoryModal({
 
         {type === "card" && (
           <p className="text-xs text-yellow-600 bg-yellow-50 border border-yellow-200 rounded-md p-2">
-            Warning: The starting balance should not exceed the user's credit limit. Exceeding the limit may lead to unrealistic transaction history.
+            Warning: The starting balance should not exceed the user&apos;s credit limit. Exceeding the limit may lead to unrealistic transaction history.
           </p>
         )}
 
