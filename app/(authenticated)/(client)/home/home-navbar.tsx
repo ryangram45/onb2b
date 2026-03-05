@@ -20,9 +20,7 @@ const HomeNavBar = () => {
 
 
   const handleLogout = () => {
-    signOut();
-    setShowLogoutPrompt(false);
-    router.push("/");
+    signOut({ callbackUrl: "/" });
   };
 
   return (

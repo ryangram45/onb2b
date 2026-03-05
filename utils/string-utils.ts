@@ -1,6 +1,6 @@
 /**
  * Get the last N digits of a string (default: 4)
- * Useful for showing masked account numbers, card numbers, etc.
+ * Useful for showing masked account numbers, card numbers etc.
  */
 export function getLastDigits(value: string, digits: number = 4): string {
   if (!value) return "";
