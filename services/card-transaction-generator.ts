@@ -1,21 +1,24 @@
 import CardTransaction from "@/lib/models/CreditCardTransaction";
+import CreditCard from "@/lib/models/CreditCard";
 import { generateCardDescription } from "@/utils/templates/card-transactions";
 
 
 interface GenerateCardHistoryOptions {
   creditCardId: string;
-  startingBalance?: number;
+  balance: number;
   days?: number;
 }
 
-function randomCardAmount(): number {
+function randomCardAmount(balance: number, days: number): number {
   const isRefund = Math.random() < 0.1;
+  const maxPurchase = balance / (days * 0.9) * 1.5;
+  const maxRefund = balance / (days * 0.1) * 0.5;
 
   if (isRefund) {
-    return Math.floor(Math.random() * 200) + 20;
+    return Math.floor(Math.random() * maxRefund) + 20;
   }
 
-  return -(Math.floor(Math.random() * 300) + 10);
+  return -(Math.floor(Math.random() * maxPurchase) + 10);
 }
 
 function subtractDays(date: Date, days: number): Date {
@@ -26,16 +29,16 @@ function subtractDays(date: Date, days: number): Date {
 
 export async function generateCardHistory({
   creditCardId,
-  startingBalance = 0,
+  balance,
   days = 30,
 }: GenerateCardHistoryOptions) {
-  let balance = startingBalance;
+  let currentBalance = balance;
 
   const transactions = [];
 
   for (let i = 0; i < days; i++) {
-    const amount = randomCardAmount();
-    balance += amount;
+    const amount = randomCardAmount(balance, days);
+    currentBalance += amount;
 
     const date = subtractDays(new Date(), i);
 
@@ -45,13 +48,17 @@ export async function generateCardHistory({
       amount,
       description: generateCardDescription(),
       type: amount > 0 ? "refund" : "purchase",
-      currentBalance: balance,
+      currentBalance,
     });
   }
 
   transactions.reverse();
 
   await CardTransaction.insertMany(transactions);
+
+  const finalBalance = transactions[transactions.length - 1].currentBalance;
+
+  await CreditCard.findByIdAndUpdate(creditCardId, { balance: finalBalance });
 
   return transactions;
 }

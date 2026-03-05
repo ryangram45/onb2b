@@ -6,6 +6,10 @@ import { getUsers } from "@/services/get-users";
 import { Users, UserCheck, UserPlus, DollarSign, } from "lucide-react";
 import AdminDashboardClient from "@/components/admin/dashboard-client";
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
+
 export default async function AdminDashboard() {
     const [metrics, users] = await Promise.all([
     getAdminMetrics(),

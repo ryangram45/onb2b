@@ -3,10 +3,12 @@ import React, { useEffect, useState } from 'react'
 import { RiInformation2Line } from "react-icons/ri";
 import { MdKeyboardArrowDown, MdKeyboardArrowUp } from 'react-icons/md';
 import { formatCurrency, getLastDigits } from '@/utils/string-utils';
+import { HistorySkeleton } from '@/components/skeletons/client/account-history-skeleton';
 
 const History = () => {
     const [showAccountNumber, setShowAccountNumber] = useState(true);
     const [visibleTransactions, setVisibleTransactions] = useState(10);
+    const [isLoading, setIsLoading] = useState(true);
     const [account, setAccount] = useState<{
       advPlusAccountNumber: string;
       routingNumber: string;
@@ -23,24 +25,35 @@ const History = () => {
 
     useEffect(() => {
       async function loadTransactions() {
-        const [accRes, txRes] = await Promise.all([
-          fetch("/api/me/bank-account"),
-          fetch(`/api/me/bank-transactions?limit=200`),
-        ]);
-        if (accRes.ok) {
-          setAccount(await accRes.json());
-        }
-        if (txRes.ok) {
-          setTransactions(await txRes.json());
+        setIsLoading(true);
+        try {
+          const [accRes, txRes] = await Promise.all([
+            fetch("/api/me/bank-account"),
+            fetch(`/api/me/bank-transactions?limit=200`),
+          ]);
+          if (accRes.ok) {
+            setAccount(await accRes.json());
+          }
+          if (txRes.ok) {
+            setTransactions(await txRes.json());
+          }
+        } catch (error) {
+          console.error("Failed to load history:", error);
+        } finally {
+          setIsLoading(false);
         }
       }
       loadTransactions();
     }, []);
 
-
     const loadMoreTransactions = () => {
         setVisibleTransactions(prevVisibleTransactions => prevVisibleTransactions + 10);
     };
+
+    if (isLoading) {
+      return <HistorySkeleton />;
+    }
+
   return (
     <div className="pt-42 pb-15 w-full max-w-3xl mx-auto">
         <h1 className='text-[0.67rem] font-semibold flex justify-end px-8 pb-1'>Provided by Bank of America</h1>
@@ -57,7 +70,9 @@ const History = () => {
             </h1>
             <div className='w-full h-full max-w-100 sm:max-w-152 lg:max-w-172 place-self-center bg-white flex flex-col rounded-lg drop-shadow-lg px-4 py-2'>
                 <h1 className='flex items-center justify-between'>Account & Routing # 
-                    <button className='cursor-pointer'>{showAccountNumber ? <MdKeyboardArrowUp size={24} color='gray' onClick={() => setShowAccountNumber(false)}/>: <MdKeyboardArrowDown size={24} color='gray' onClick={() => setShowAccountNumber(true)}/>}</button>
+                    <button className='cursor-pointer' onClick={() => setShowAccountNumber(!showAccountNumber)}>
+                      {showAccountNumber ? <MdKeyboardArrowUp size={24} color='gray' /> : <MdKeyboardArrowDown size={24} color='gray' />}
+                    </button>
                 </h1>
                 {showAccountNumber && (
                     <div className='flex flex-col gap-1'>

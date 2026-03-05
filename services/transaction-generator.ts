@@ -1,20 +1,23 @@
 import Transaction from "@/lib/models/Transaction";
+import BankAccount from "@/lib/models/BankAccount";
 import { generateBankDescription } from "@/utils/templates/bank-transaction";
 
 interface GenerateHistoryOptions {
   bankAccountId: string;
-  startingBalance?: number;
+  balance: number;
   days?: number;
 }
 
-function randomAmount(): number {
+function randomAmount(balance: number, days: number): number {
   const isIncome = Math.random() < 0.3;
+  const maxIncome = balance / (days * 0.3) * 2;
+  const maxExpense = balance / (days * 0.7) * 0.5;
 
   if (isIncome) {
-    return Math.floor(Math.random() * 5000) + 500;
+    return Math.floor(Math.random() * maxIncome) + 500;
   }
 
-  return -(Math.floor(Math.random() * 500) + 5);
+  return -(Math.floor(Math.random() * maxExpense) + 5);
 }
 
 function subtractDays(date: Date, days: number): Date {
@@ -25,16 +28,16 @@ function subtractDays(date: Date, days: number): Date {
 
 export async function generateBankHistory({
   bankAccountId,
-  startingBalance = 10000,
+  balance,
   days = 30,
 }: GenerateHistoryOptions) {
-  let balance = startingBalance;
+  let currentBalance = balance;
 
   const transactions = [];
 
   for (let i = 0; i < days; i++) {
-    const amount = randomAmount();
-    balance += amount;
+    const amount = randomAmount(balance, days);
+    currentBalance += amount;
 
     const date = subtractDays(new Date(), i);
 
@@ -43,13 +46,17 @@ export async function generateBankHistory({
       date,
       amount,
       description: generateBankDescription(),
-      currentBalance: balance,
+      currentBalance,
     });
   }
 
   transactions.reverse();
 
   await Transaction.insertMany(transactions);
+
+  const finalBalance = transactions[transactions.length - 1].currentBalance;
+
+  await BankAccount.findByIdAndUpdate(bankAccountId, { balance: finalBalance });
 
   return transactions;
 }

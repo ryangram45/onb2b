@@ -16,7 +16,7 @@ export async function POST(
     return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
   }
 
-  const { startDate, endDate } = await request.json();
+  const { startDate, endDate, balance } = await request.json();
 
   const start = new Date(startDate);
   const end = new Date(endDate);
@@ -41,6 +41,7 @@ export async function POST(
   await generateBankHistory({
     bankAccountId: bankAccount._id.toString(),
     days,
+    balance,
   });
 
   return NextResponse.json({ message: "History generated" });
