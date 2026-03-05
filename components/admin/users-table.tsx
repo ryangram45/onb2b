@@ -16,6 +16,7 @@ import GenerateHistoryModal from "@/components/admin/generate-history-modal";
 import UserRowLink from "@/components/admin/user-row-link";
 import { cn } from "@/lib/utils";
 
+
 type User = {
   id: string;
   firstName: string;
