@@ -21,11 +21,6 @@ export async function POST(
   const start = new Date(startDate);
   const end = new Date(endDate);
 
-  const days =
-    Math.ceil(
-      (end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)
-    ) + 1;
-
   await dbConnect();
 
   const { id } = await params;
@@ -43,8 +38,9 @@ export async function POST(
 
   await generateCardHistory({
     creditCardId: creditCard._id.toString(),
-    days,
     balance,
+    startDate: start,
+    endDate: end,
   });
 
   return NextResponse.json({ message: "Card history generated" });

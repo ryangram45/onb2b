@@ -8,19 +8,43 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-export async function sendOtpEmail(
-  to: string,
-  code: string
-) {
+interface EmailOptions {
+  to: string;
+  subject: string;
+  html: string;
+}
+
+async function sendEmail({ to, subject, html }: EmailOptions) {
   await transporter.sendMail({
     from: `"no-reply" <${process.env.EMAIL_USER}>`,
+    to,
+    subject,
+    html,
+  });
+}
+
+export async function sendOtpEmail(to: string, code: string) {
+  await sendEmail({
     to,
     subject: "Your Login OTP Code",
     html: `
       <h2>Login Verification</h2>
       <p>Your OTP code is:</p>
       <h1>${code}</h1>
-      <p>This code expires in 5 minutes.</p>
+      <p>This code expires in 10 minutes.</p>
+    `,
+  });
+}
+
+export async function sendWireAuthorizationOtp(to: string, code: string) {
+  await sendEmail({
+    to,
+    subject: "Wire Transfer Authorization OTP",
+    html: `
+      <h2>Wire Transfer Authorization</h2>
+      <p>Your authorization code is:</p>
+      <h1>${code}</h1>
+      <p>This code expires in 10 minutes. If you did not request this, please contact support immediately.</p>
     `,
   });
 }

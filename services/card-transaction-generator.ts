@@ -1,64 +1,91 @@
 import CardTransaction from "@/lib/models/CreditCardTransaction";
 import CreditCard from "@/lib/models/CreditCard";
-import { generateCardDescription } from "@/utils/templates/card-transactions";
-
+import { transactionMerchants } from "@/lib/transaction-rules";
+import { buildDescription, randomAmount } from "@/utils/transaction-helpers";
 
 interface GenerateCardHistoryOptions {
   creditCardId: string;
   balance: number;
-  days?: number;
-}
-
-function randomCardAmount(balance: number, days: number): number {
-  const isRefund = Math.random() < 0.1;
-  const maxPurchase = balance / (days * 0.9) * 1.5;
-  const maxRefund = balance / (days * 0.1) * 0.5;
-
-  if (isRefund) {
-    return Math.floor(Math.random() * maxRefund) + 20;
-  }
-
-  return -(Math.floor(Math.random() * maxPurchase) + 10);
-}
-
-function subtractDays(date: Date, days: number): Date {
-  const d = new Date(date);
-  d.setDate(d.getDate() - days);
-  return d;
+  startDate: Date;
+  endDate: Date;
 }
 
 export async function generateCardHistory({
   creditCardId,
   balance,
-  days = 30,
+  startDate,
+  endDate,
 }: GenerateCardHistoryOptions) {
   let currentBalance = balance;
-
   const transactions = [];
 
-  for (let i = 0; i < days; i++) {
-    const amount = randomCardAmount(balance, days);
-    currentBalance += amount;
+  for (let day = new Date(startDate); day <= endDate; day.setDate(day.getDate() + 1)) {
+    const date = new Date(day);
+    const dayOfWeek = date.getDay();
 
-    const date = subtractDays(new Date(), i);
+    // Monthly Bills
+    if (date.getDate() === 10) { // Netflix
+      const netflix = transactionMerchants.streaming[0];
+      const netflixAmount = -randomAmount(netflix.min, netflix.max);
+      if (currentBalance + netflixAmount > 0) {
+        currentBalance += netflixAmount;
+        transactions.push({
+          creditCardId, date, amount: netflixAmount,
+          description: buildDescription(netflix.name, 'web'), currentBalance,
+          type: 'purchase'
+        });
+      }
+    }
 
-    transactions.push({
-      creditCardId,
-      date,
-      amount,
-      description: generateCardDescription(),
-      type: amount > 0 ? "refund" : "purchase",
-      currentBalance,
-    });
+    // Groceries
+    if ([1, 5].includes(dayOfWeek) && Math.random() < 0.4) { // Mon, Fri
+      const merchant = transactionMerchants.groceries[Math.floor(Math.random() * transactionMerchants.groceries.length)];
+      const amount = -randomAmount(merchant.min, merchant.max);
+      if (currentBalance > 200 && currentBalance + amount > 0) {
+        currentBalance += amount;
+        transactions.push({ creditCardId, date, amount, description: buildDescription(merchant.name, 'pos'), currentBalance, type: 'purchase' });
+      }
+    }
+
+    // Gas
+    if (dayOfWeek === 4 && Math.random() < 0.7) { // Thursday
+      const merchant = transactionMerchants.gas[Math.floor(Math.random() * transactionMerchants.gas.length)];
+      const amount = -randomAmount(merchant.min, merchant.max);
+      if (currentBalance > 100 && currentBalance + amount > 0) {
+        currentBalance += amount;
+        transactions.push({ creditCardId, date, amount, description: buildDescription(merchant.name, 'pos'), currentBalance, type: 'purchase' });
+      }
+    }
+
+    // Dining/Coffee
+    if (Math.random() < (currentBalance > 500 ? 0.5 : 0.15)) {
+      const merchant = transactionMerchants.dining[0];
+      const amount = -randomAmount(merchant.min, merchant.max);
+      if (currentBalance + amount > 0) {
+        currentBalance += amount;
+        transactions.push({ creditCardId, date, amount, description: buildDescription(merchant.name, 'pos'), currentBalance, type: 'purchase' });
+      }
+    }
+
+    // Amazon Shopping
+    if (Math.random() < 0.25) { // Occasional shopping
+        const merchant = transactionMerchants.shopping[0];
+        const amount = -randomAmount(merchant.min, merchant.max);
+        if (currentBalance > 300 && currentBalance + amount > 0) {
+            currentBalance += amount;
+            transactions.push({ creditCardId, date, amount, description: buildDescription(merchant.name, 'web'), currentBalance, type: 'purchase' });
+        }
+    }
   }
 
-  transactions.reverse();
+  transactions.sort((a, b) => a.date.getTime() - b.date.getTime());
 
   await CardTransaction.insertMany(transactions);
 
-  const finalBalance = transactions[transactions.length - 1].currentBalance;
-
-  await CreditCard.findByIdAndUpdate(creditCardId, { balance: finalBalance });
+  if (transactions.length > 0) {
+    const finalBalance = transactions[transactions.length - 1].currentBalance;
+    await CreditCard.findByIdAndUpdate(creditCardId, { balance: finalBalance });
+  }
 
   return transactions;
 }

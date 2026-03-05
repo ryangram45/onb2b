@@ -96,7 +96,7 @@ export default function WireOtpClient() {
           amount: Number(amountParam),
           currency,
           recipientId,
-          recipientName: "", // optional; server can infer if needed
+          recipientName: "",
           accountId,
           accountLabel,
           note,
