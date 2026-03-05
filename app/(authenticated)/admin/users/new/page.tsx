@@ -78,7 +78,7 @@ export default function CreateUserPage() {
       </div>
 
       <div>
-        <Label htmlFor="creditCard.cardName">Credit Card Display Name i.e<span className="italic text-sm">Always use Doc as the display name or check online for credit card name</span></Label>
+        <Label htmlFor="creditCard.cardName">Credit Card Display Name  i.e<span className="italic text-xs">Use “Doc” as the display name, or look up the cardholder name online specifically boa card names .</span></Label>
         <Input
           id="creditCard.cardName"
           placeholder="e.g. Visa Personal"
