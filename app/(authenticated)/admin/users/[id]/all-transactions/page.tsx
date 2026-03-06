@@ -15,7 +15,7 @@ export default async function AllTransactionsPage({
   const cookie = hdrs.get("cookie") ?? "";
 
   const res = await fetch(
-    `${baseUrl}/api/admin/users/${id}/all-transactions?limit=15&offset=0`,
+    `${baseUrl}/api/admin/users/${id}/bank-transactions?limit=16&offset=0`,
     {
       cache: "no-store",
       headers: { cookie },
@@ -26,8 +26,16 @@ export default async function AllTransactionsPage({
   let initialHasMore = false;
   if (res.ok) {
     const data = await res.json();
-    initialItems = data.items ?? [];
-    initialHasMore = Boolean(data.hasMore);
+    const mapped = (data as any[]).map((t) => ({
+      id: t.id,
+      date: t.date ?? null,
+      description: t.description,
+      amount: t.amount,
+      balance: t.balance,
+      kind: "Bank" as const,
+    }));
+    initialHasMore = mapped.length === 16;
+    initialItems = mapped.slice(0, 15);
   }
 
   return (
@@ -35,6 +43,8 @@ export default async function AllTransactionsPage({
       <h1 className="text-2xl font-bold">All Transactions</h1>
       <AllTransactionsTable
         userId={id}
+        fetchUrl={`/api/admin/users/${id}/bank-transactions`}
+        itemKind="Bank"
         initialItems={initialItems}
         initialHasMore={initialHasMore}
       />
