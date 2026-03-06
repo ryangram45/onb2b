@@ -17,22 +17,24 @@ interface GenerateHistoryArgs {
   creditCardId: string;
   creditLimit: number;
   userId: string;
+  startingBalance?: number;
+  closingBalance?: number;
 }
 
 export async function generateCardHistory(args: GenerateHistoryArgs) {
-  const { creditCardId, creditLimit, userId } = args;
+  const { creditCardId, creditLimit, userId, startingBalance, closingBalance } = args;
 
   // 1. Clear old history
   await CreditCardTransaction.deleteMany({ creditCardId });
 
-  let currentBalance = 0;
+  let currentBalance = startingBalance ?? 0;
   const transactions: any[] = [];
   const purchaseHistory: any[] = [];
   const today = new Date();
   const ninetyDaysAgo = new Date();
   ninetyDaysAgo.setDate(today.getDate() - 90);
 
-  let nextPaymentDate = new Date(ninetyDaysAgo);
+  const nextPaymentDate = new Date(ninetyDaysAgo);
   nextPaymentDate.setDate(ninetyDaysAgo.getDate() + 25 + Math.floor(Math.random() * 5)); // Schedule first payment
 
   for (let day = new Date(ninetyDaysAgo); day <= today; day.setDate(day.getDate() + 1)) {
@@ -111,10 +113,51 @@ export async function generateCardHistory(args: GenerateHistoryArgs) {
   transactions.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
   // Recalculate running balance to ensure accuracy
-  let runningBalance = 0;
+  let runningBalance = startingBalance ?? 0;
   for (const tx of transactions) {
     runningBalance += -tx.amount; // Invert amount for calculation
     tx.currentBalance = runningBalance;
+  }
+
+  const finalBalanceCalculated = transactions.length > 0 ? transactions[transactions.length - 1].currentBalance : (startingBalance ?? 0);
+  if (typeof closingBalance === "number") {
+    const closingBalanceDelta = closingBalance - finalBalanceCalculated;
+    if (closingBalanceDelta !== 0) {
+      if (closingBalanceDelta > 0) {
+        const pools = [
+          ...REALISTIC_MERCHANTS.HIGH_FREQUENCY,
+          ...REALISTIC_MERCHANTS.WEEKLY,
+          ...REALISTIC_MERCHANTS.BI_WEEKLY,
+          ...REALISTIC_MERCHANTS.MONTHLY,
+          ...REALISTIC_MERCHANTS.OCCASIONAL,
+        ];
+        const merchant = getRandomElement(pools);
+        const purchaseAdjustment = {
+          creditCardId,
+          userId,
+          date: today,
+          amount: -closingBalanceDelta,
+          description: `${merchant.name} - ${merchant.type}`,
+          category: merchant.category,
+          type: "Purchase",
+          currentBalance: finalBalanceCalculated + closingBalanceDelta,
+        };
+        transactions.push(purchaseAdjustment);
+      } else {
+        const paymentDescription = getRandomElement(PAYMENT_DESCRIPTIONS);
+        const paymentAdjustment = {
+          creditCardId,
+          userId,
+          date: today,
+          amount: Math.abs(closingBalanceDelta),
+          description: paymentDescription,
+          category: "Payment",
+          type: "Payment",
+          currentBalance: finalBalanceCalculated + closingBalanceDelta,
+        };
+        transactions.push(paymentAdjustment);
+      }
+    }
   }
 
   if (transactions.length > 0) {

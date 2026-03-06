@@ -31,7 +31,8 @@ interface Props {
 interface FormValues {
   startDate: Date;
   endDate: Date;
-  balance: number;
+  startingBalance: number;
+  closingBalance: number;
 }
 
 export default function GenerateHistoryModal({
@@ -57,7 +58,12 @@ export default function GenerateHistoryModal({
       const res = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...data, balance: Number(data.balance) }),
+        body: JSON.stringify({
+          startDate: data.startDate,
+          endDate: data.endDate,
+          startingBalance: Number(data.startingBalance),
+          closingBalance: Number(data.closingBalance),
+        }),
       });
 
       if (!res.ok) {
@@ -97,16 +103,29 @@ export default function GenerateHistoryModal({
         )}
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div>
-            <label htmlFor="balance" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Balance</label>
-            <Input
-              id="balance"
-              type="number"
-              {...register("balance")}
-              required
-              disabled={loading}
-              placeholder="Enter balance"
-            />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label htmlFor="startingBalance" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Starting Balance</label>
+              <Input
+                id="startingBalance"
+                type="number"
+                {...register("startingBalance", { required: true, valueAsNumber: true })}
+                required
+                disabled={loading}
+                placeholder="Balance at start date"
+              />
+            </div>
+            <div>
+              <label htmlFor="closingBalance" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Closing Balance</label>
+              <Input
+                id="closingBalance"
+                type="number"
+                {...register("closingBalance", { required: true, valueAsNumber: true })}
+                required
+                disabled={loading}
+                placeholder="Balance at end date"
+              />
+            </div>
           </div>
 
           <div>

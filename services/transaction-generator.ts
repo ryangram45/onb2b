@@ -10,13 +10,14 @@ const getRandomElement = <T>(arr: T[]): T => arr[Math.floor(Math.random() * arr.
 
 interface GenerateHistoryArgs {
   bankAccountId: string;
-  balance: number; // This is the starting balance
+  startingBalance: number;
+  closingBalance: number;
   startDate: Date;
   endDate: Date;
 }
 
 export async function generateBankHistory(args: GenerateHistoryArgs) {
-  const { bankAccountId, balance, startDate, endDate } = args;
+  const { bankAccountId, startingBalance, closingBalance, startDate, endDate } = args;
 
   await Transaction.deleteMany({ bankAccountId });
 
@@ -78,7 +79,7 @@ export async function generateBankHistory(args: GenerateHistoryArgs) {
   transactions.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
   // 4. Calculate running balance and save
-  let runningBalance = balance;
+  let runningBalance = startingBalance;
   for (const tx of transactions) {
     runningBalance += tx.amount;
     // Ensure balance doesn't go negative from debits
@@ -92,12 +93,42 @@ export async function generateBankHistory(args: GenerateHistoryArgs) {
   
   const finalTransactions = transactions.filter(tx => tx.amount !== 0); // Filter out reverted transactions
 
+  const finalBalanceCalculated = finalTransactions.length > 0 ? finalTransactions[finalTransactions.length - 1].currentBalance : startingBalance;
+  const closingBalanceDelta = closingBalance - finalBalanceCalculated;
+  if (closingBalanceDelta !== 0) {
+    if (closingBalanceDelta > 0) {
+      const incomeKeys = ["ACH_Transfer", "Wire_Transfer", "Zelle", "Tax_Refund", "Interest"] as const;
+      const selectedIncomeKey = getRandomElement([...incomeKeys]);
+      const income = INCOME_SOURCES[selectedIncomeKey];
+      finalTransactions.push({
+        date: endDate,
+        amount: closingBalanceDelta,
+        description: income.descriptor(),
+        category: "Deposit",
+        bankAccountId,
+        currentBalance: finalBalanceCalculated + closingBalanceDelta,
+      });
+    } else {
+      const debitCategories = Object.keys(DEBIT_MERCHANTS_BY_CATEGORY) as Array<keyof typeof DEBIT_MERCHANTS_BY_CATEGORY>;
+      const selectedCategory = getRandomElement(debitCategories);
+      const merchant = getRandomElement(DEBIT_MERCHANTS_BY_CATEGORY[selectedCategory]);
+      finalTransactions.push({
+        date: endDate,
+        amount: closingBalanceDelta, // negative
+        description: `${merchant.name.toUpperCase()} ${merchant.descriptor()}`,
+        category: selectedCategory,
+        bankAccountId,
+        currentBalance: finalBalanceCalculated + closingBalanceDelta,
+      });
+    }
+  }
+
   if (finalTransactions.length > 0) {
     await Transaction.insertMany(finalTransactions);
     const finalBalance = finalTransactions[finalTransactions.length - 1].currentBalance;
     await BankAccount.findByIdAndUpdate(bankAccountId, { balance: finalBalance });
   } else {
-    await BankAccount.findByIdAndUpdate(bankAccountId, { balance });
+    await BankAccount.findByIdAndUpdate(bankAccountId, { balance: startingBalance });
   }
 
   return finalTransactions;

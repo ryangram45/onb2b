@@ -19,6 +19,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import UserHistoryActions from "@/components/admin/user-history-actions";
+import TransactionListClient from "./TransactionListClient";
 
 const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 
@@ -359,31 +360,17 @@ export default async function UserDetailPage({
               <CardTitle className="text-base font-medium">Recent Bank Activity</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-3">
-                {recentTransactions.map((tx, i) => (
-                  <div key={i} className="flex items-center justify-between p-2 rounded-lg hover:bg-muted/50">
-                    <div className="space-y-1">
-                      <p className="text-sm font-medium">{tx.description}</p>
-                      <p className="text-xs text-muted-foreground">{tx.date}</p>
-                    </div>
-                    <div className="text-right">
-                      <p className={cn(
-                        "font-semibold",
-                        tx.amount > 0 ? "text-green-600" : "text-onb2b-red-450"
-                      )}>
-                        {tx.amount > 0 ? "+" : ""}{formatCurrency(tx.amount)}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        Balance: {formatCurrency(tx.balance)}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
+              <TransactionListClient
+                userId={id}
+                type="bank"
+                transactions={recentTransactions}
+              />
               
-              <Button variant="link" className="mt-4 text-onb2b-blue-600 w-full">
-                View All Transactions
-              </Button>
+              <a href={`/admin/users/${id}/bank-transactions`} className="block">
+                <Button variant="link" className="mt-4 text-onb2b-blue-600 w-full">
+                  View All Transactions
+                </Button>
+              </a>
             </CardContent>
           </Card>
         </TabsContent>
@@ -394,28 +381,17 @@ export default async function UserDetailPage({
               <CardTitle className="text-base font-medium">Recent Card Activity</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-3">
-                {recentCardTransactions.map((tx, index) => (
-                  <div key={index} className="flex items-center justify-between p-2 rounded-lg hover:bg-muted/50">
-                    <div className="space-y-1">
-                      <p className="text-sm font-medium">{tx.merchant}</p>
-                      <p className="text-xs text-muted-foreground">{tx.date}</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-semibold text-onb2b-red-450">
-                        {formatCurrency(tx.amount)}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        Balance: {formatCurrency(tx.balance)}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
+              <TransactionListClient
+                userId={id}
+                type="card"
+                transactions={recentCardTransactions}
+              />
               
-              <Button variant="link" className="mt-4 text-onb2b-red-450 w-full">
-                View All Card Transactions
-              </Button>
+              <a href={`/admin/users/${id}/card-transactions`} className="block">
+                <Button variant="link" className="mt-4 text-onb2b-red-450 w-full">
+                  View All Card Transactions
+                </Button>
+              </a>
             </CardContent>
           </Card>
         </TabsContent>

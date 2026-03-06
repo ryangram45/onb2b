@@ -4,6 +4,7 @@ import { signOut } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 import { LogOut, Bell, User } from "lucide-react";
 import {
   DropdownMenu,
@@ -19,7 +20,8 @@ export default function AdminHeader() {
   return (
     <header className="h-16 border-b bg-white dark:bg-gray-950 px-6 flex items-center justify-between sticky top-0 z-10">
       {/* Left side - Logo for mobile */}
-      <div className="">
+      <div className="flex items-center gap-2">
+        <SidebarTrigger className="md:hidden mr-2 mt-1.5 cursor-pointer" />
         <Link href="/admin/dashboard">
           <Image
             src="/images/fullLogo.svg"

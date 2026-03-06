@@ -28,6 +28,7 @@ export async function GET(
     const { id } = await params;
     const url = new URL(req.url);
     const limit = Math.max(1, Math.min(100, Number(url.searchParams.get("limit")) || 10));
+    const offset = Math.max(0, Number(url.searchParams.get("offset")) || 0);
 
     await dbConnect();
 
@@ -40,7 +41,8 @@ export async function GET(
     }
 
     const txs = await Transaction.find({ bankAccountId: account._id })
-      .sort({ date: -1 })
+      .sort({ date: -1, createdAt: -1, _id: -1 })
+      .skip(offset)
       .limit(limit)
       .lean();
 
@@ -51,6 +53,7 @@ export async function GET(
         amount: t.amount,
         description: t.description,
         balance: t.currentBalance,
+        kind: "Bank",
       }))
     );
   } catch (error) {
