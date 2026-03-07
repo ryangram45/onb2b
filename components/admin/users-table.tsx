@@ -13,24 +13,30 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { UserStatusToggle } from "@/components/admin/users-status-toggle";
 import GenerateHistoryModal from "@/components/admin/generate-history-modal";
+import EditUserModal from "@/components/admin/modal/edit-user";
 import UserRowLink from "@/components/admin/user-row-link";
 import { cn } from "@/lib/utils";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Pencil } from "lucide-react";
 
 
 type User = {
   id: string;
+  userId?: string;
   firstName: string;
   lastName: string;
   fullName?: string;
   email: string;
   role: string;
   isActive: boolean;
+  createdAt?: string;
 };
 
 export default function UsersTable({ users }: { users: User[] }) {
   const [bankModalOpen, setBankModalOpen] = useState(false);
   const [cardModalOpen, setCardModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [editOpen, setEditOpen] = useState(false);
 
   function openBankModal(user: User) {
     setSelectedUser(user);
@@ -40,6 +46,11 @@ export default function UsersTable({ users }: { users: User[] }) {
   function openCardModal(user: User) {
     setSelectedUser(user);
     setCardModalOpen(true);
+  }
+
+  function openEditModal(user: User) {
+    setSelectedUser(user);
+    setEditOpen(true);
   }
 
   const getUserDisplayName = (user: User): string => {
@@ -57,7 +68,7 @@ export default function UsersTable({ users }: { users: User[] }) {
               <TableHead className="text-onb2b-blue-900 dark:text-onb2b-blue-300 font-semibold">Email</TableHead>
               <TableHead className="text-onb2b-blue-900 dark:text-onb2b-blue-300 font-semibold">Role</TableHead>
               <TableHead className="text-onb2b-blue-900 dark:text-onb2b-blue-300 font-semibold">Active</TableHead>
-              <TableHead colSpan={2} className="text-onb2b-blue-900 dark:text-onb2b-blue-300 font-semibold">
+              <TableHead colSpan={3} className="text-onb2b-blue-900 dark:text-onb2b-blue-300 font-semibold">
                 Actions
               </TableHead>
             </TableRow>
@@ -97,6 +108,25 @@ export default function UsersTable({ users }: { users: User[] }) {
                 </TableCell>
 
                 <TableCell>
+                  <TooltipProvider delayDuration={0}>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => openEditModal(user)}
+                          className="cursor-pointer"
+                          aria-label="Edit user"
+                        >
+                          <Pencil className="h-4 w-4" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>Edit</TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </TableCell>
+
+                <TableCell>
                   <Button
                     size="sm"
                     onClick={() => openBankModal(user)}
@@ -124,6 +154,12 @@ export default function UsersTable({ users }: { users: User[] }) {
       {/* Bank History Modal */}
       {selectedUser && (
         <>
+          <EditUserModal
+            open={editOpen}
+            onOpenChange={setEditOpen}
+            user={selectedUser}
+          />
+
           <GenerateHistoryModal
             open={bankModalOpen}
             onClose={() => setBankModalOpen(false)}

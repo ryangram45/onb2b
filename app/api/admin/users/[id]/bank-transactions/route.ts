@@ -6,19 +6,16 @@ import dbConnect from "@/lib/db/mongodb";
 import BankAccount from "@/lib/models/BankAccount";
 import Transaction from "@/lib/models/Transaction";
 
-function formatDate(d?: Date) {
-  if (!d) return null;
-  return d.toLocaleDateString("en-US", {
+function formatDate(date?: Date) {
+  if (!date) return null;
+  return date.toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
     year: "numeric",
   });
 }
 
-export async function GET(
-  req: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function GET(req: Request,{ params }: { params: Promise<{ id: string }> }) {
   try {
     const session = await getServerSession(authOptions);
     if (!session || session.user.role !== UserRole.ADMIN) {

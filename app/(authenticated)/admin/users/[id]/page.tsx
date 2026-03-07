@@ -20,6 +20,7 @@ import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import UserHistoryActions from "@/components/admin/user-history-actions";
 import TransactionListClient from "./TransactionListClient";
+import PageBackHeader from "@/components/admin/page-back-header"
 
 const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 
@@ -188,11 +189,12 @@ export default async function UserDetailPage({
       {/* Header with back button and actions */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <Link href="/admin/users">
+          {/* <Link href="/admin/users">
             <Button variant="ghost" size="icon" className="rounded-full cursor-pointer hover:bg-transparent">
               <ArrowLeft className="h-5 w-5 text-onb2b-blue-900" />
             </Button>
-          </Link>
+          </Link> */}
+          <PageBackHeader/>
           <div>
             <h1 className="text-2xl font-bold">
               User Profile

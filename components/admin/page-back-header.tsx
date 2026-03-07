@@ -4,11 +4,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 
-export default function PageBackHeader({
-  title,
-}: {
-  title: string;
-}) {
+export default function PageBackHeader({ title }: { title?: string }) {
   const router = useRouter();
   return (
     <div className="mb-4 flex items-center gap-3">

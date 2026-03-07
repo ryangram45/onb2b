@@ -44,7 +44,9 @@ export async function RecentUsersCard({ users }: { users: User[] }) {
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-          {users.slice(0, 5).map((user) => (
+          {users
+            .slice(0, 5)
+            .map((user) => (
             <Link 
               key={user.id} 
               href={`/admin/users/${user.id}`}
