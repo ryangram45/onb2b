@@ -190,7 +190,7 @@ export default function EditUserModal({
             onClick={() => setEditMode((e) => !e)}
             className="cursor-pointer"
           >
-            {editMode ? "Cancel Edit" : "Edit"}
+            {editMode ? "Cancel" : "Edit"}
           </Button>
           <Button
             type="button"
