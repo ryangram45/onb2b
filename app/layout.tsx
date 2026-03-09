@@ -14,19 +14,9 @@ const _quicksand = Quicksand({
 export const metadata: Metadata = {
   title: "Onb2b",
   description:
-    "What would you like the power to do? At onb2b, our purpose is to help make financial lives better through the power of every connection.",
+    "What would you like the power to do?",
   keywords: [
-    "bank",
-    "banks",
-    "banking",
-    "finance",
-    "finances",
-    "financial",
-    "financial institution",
-    "financial planning",
-    "personal finance",
-    "personal finances",
-    "financial management",
+    "invest"
   ],
   icons: {
     icon: [
