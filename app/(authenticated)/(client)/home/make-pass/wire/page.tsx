@@ -33,7 +33,7 @@
            </h2>
  
            <div className="flex justify-center">
-             <Button onClick={() => router.push("/home/transfer/wire/send-money")} className="rounded-full px-6 py-5 text-sm font-bold bg-blue-900 hover:bg-blue-950 text-white cursor-pointer">
+             <Button onClick={() => router.push("/home/make-pass/wire/send")} className="rounded-full px-6 py-5 text-sm font-bold bg-blue-900 hover:bg-blue-950 text-white cursor-pointer">
                START A WIRE
              </Button>
            </div>

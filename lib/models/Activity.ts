@@ -10,7 +10,7 @@ const ActivitySchema = new mongoose.Schema(
     },
     type: {
       type: String,
-      enum: ["wire_transfer"],
+      enum: ["Gift_Goal"],
       required: true,
       index: true,
     },

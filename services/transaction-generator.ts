@@ -1,6 +1,6 @@
 import BankAccount from "@/lib/models/BankAccount";
 import Transaction from "@/lib/models/Transaction";
-import { DEBIT_MERCHANTS_BY_CATEGORY, INCOME_SOURCES } from "@/lib/simulation/bank-rules";
+import { DEBIT_MERCHANTS_BY_CATEGORY, INCOME_SOURCES } from "@/lib/simulation/goals-rules";
 
 // --- Helper Functions ---
 const randomAmount = (min: number, max: number) => Math.random() * (max - min) + min;
@@ -49,8 +49,8 @@ export async function generateBankHistory(args: GenerateHistoryArgs) {
       transactions.push({ date: currentDate, amount: randomAmount(income.min, income.max), description: income.descriptor(), category: "Deposit" });
     }
 
-    // Probabilistic Major Credits (Wires, ACH, Zelle)
-    if (Math.random() < 0.1) { // Reduced probability to make them more special
+    // Probabilistic Major Credits
+    if (Math.random() < 0.1) {
         const sourceType = getRandomElement(["Wire_Transfer", "ACH_Transfer", "Zelle"]);
         const income = INCOME_SOURCES[sourceType as keyof typeof INCOME_SOURCES];
         transactions.push({ date: currentDate, amount: randomAmount(income.min, income.max), description: income.descriptor(), category: "Deposit" });
@@ -67,7 +67,7 @@ export async function generateBankHistory(args: GenerateHistoryArgs) {
     }
 
     // Daily spending, with low probability
-    if (Math.random() < 0.6) { // 60% chance of any spending
+    if (Math.random() < 0.6) {
         const category = getRandomElement(["Dining", "Gas", "Groceries", "Shopping"]);
         const merchants = DEBIT_MERCHANTS_BY_CATEGORY[category as keyof typeof DEBIT_MERCHANTS_BY_CATEGORY];
         const merchant = getRandomElement(merchants);
@@ -84,14 +84,14 @@ export async function generateBankHistory(args: GenerateHistoryArgs) {
     runningBalance += tx.amount;
     // Ensure balance doesn't go negative from debits
     if (runningBalance < 0 && tx.amount < 0) {
-        runningBalance -= tx.amount; // Revert transaction if it causes overdraft
-        tx.amount = 0; // Effectively remove the transaction
+        runningBalance -= tx.amount;
+        tx.amount = 0;
     }
     tx.currentBalance = runningBalance;
     tx.bankAccountId = bankAccountId;
   }
   
-  const finalTransactions = transactions.filter(tx => tx.amount !== 0); // Filter out reverted transactions
+  const finalTransactions = transactions.filter(tx => tx.amount !== 0);
 
   const finalBalanceCalculated = finalTransactions.length > 0 ? finalTransactions[finalTransactions.length - 1].currentBalance : startingBalance;
   const closingBalanceDelta = closingBalance - finalBalanceCalculated;
@@ -114,7 +114,7 @@ export async function generateBankHistory(args: GenerateHistoryArgs) {
       const merchant = getRandomElement(DEBIT_MERCHANTS_BY_CATEGORY[selectedCategory]);
       finalTransactions.push({
         date: endDate,
-        amount: closingBalanceDelta, // negative
+        amount: closingBalanceDelta,
         description: `${merchant.name.toUpperCase()} ${merchant.descriptor()}`,
         category: selectedCategory,
         bankAccountId,

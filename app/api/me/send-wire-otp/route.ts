@@ -4,7 +4,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/auth";
 import dbConnect from "@/lib/db/mongodb";
 import OtpSession from "@/lib/models/OtpSession";
 import { generateOtp } from "@/utils/otp";
-import { sendWireAuthorizationOtp } from "@/lib/mailer/email";
+import { sendGiftOtp } from "@/lib/mailer/email";
 
 export async function POST() {
   try {
@@ -24,7 +24,7 @@ export async function POST() {
       expiresAt: new Date(Date.now() + 10 * 60 * 1000), // 10 minutes
     });
 
-    await sendWireAuthorizationOtp(session.user.email, otpCode);
+    await sendGiftOtp(session.user.email, otpCode);
 
     return NextResponse.json({ success: true });
   } catch (error) {

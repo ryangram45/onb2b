@@ -41,7 +41,7 @@
        </div>
  
        <div className="fixed bottom-0 left-0 right-0 mx-auto flex items-center justify-between py-2 px-4 sm:px-6 max-w-screen-md z-50 bg-white/50">
-         <Button variant="whiteGhost" onClick={() => router.push("/home/transfer/wire")} className="flex-1 rounded-full text-onb2b-blue-950 no-underline bg-white font-semibold tracking-wide">CANCEL</Button>
+         <Button variant="whiteGhost" onClick={() => router.push("/home/make-pass/wire")} className="flex-1 rounded-full text-onb2b-blue-950 no-underline bg-white font-semibold tracking-wide">CANCEL</Button>
          <Button disabled={!canProceed} className="flex-1 rounded-full bg-onb2b-blue-950 font-semibold tracking-wide">NEXT</Button>
        </div>
      </div>

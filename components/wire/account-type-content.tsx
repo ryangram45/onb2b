@@ -22,7 +22,7 @@ export default function AccountTypeContent() {
 
   const handleCancelClick = () => {
     const query = selectedCountryName ? `?country=${encodeURIComponent(selectedCountryName)}` : "";
-    router.push(`/home/transfer/wire/currency${query}`);
+    router.push(`/home/make-pass/wire/currency${query}`);
   };
 
   const handleNextClick = () => {
@@ -32,7 +32,7 @@ export default function AccountTypeContent() {
     if (selectedCurrencyCode) params.set("currency", selectedCurrencyCode);
     params.set("accountType", selectedAccountType!);
     params.set("receiverAccount", selectedReceiverAccount!);
-    router.push(`/home/transfer/wire/add-person?${params.toString()}`);
+    router.push(`/home/make-pass/wire/add-person?${params.toString()}`);
   };
 
   return (

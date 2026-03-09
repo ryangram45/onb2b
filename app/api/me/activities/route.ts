@@ -15,7 +15,7 @@ export async function POST(req: Request) {
 
     const body = await req.json();
     const {
-      type = "wire_transfer",
+      type = "Gift_Goal",
       amount,
       currency = "USD",
       recipientId,

@@ -46,14 +46,14 @@
        <div className="fixed bottom-0 left-0 right-0 mx-auto border-t border-gray-200 flex items-center justify-between py-2 px-4 sm:px-6 max-w-screen-md z-50 bg-white/50">
          <Button
            variant="whiteGhost"
-           onClick={() => router.push("/home/transfer/wire/send-money")}
+           onClick={() => router.push("/home/make-pass/wire/send")}
            className="flex-1 rounded-full text-onb2b-blue-950 no-underline bg-white font-semibold tracking-wide cursor-pointer"
          >
            CANCEL
          </Button>
         <Button
           disabled={!selected}
-          onClick={() => router.push(`/home/transfer/wire/currency?country=${encodeURIComponent(selected!.name)}&countryCode=${selected!.code}`)}
+          onClick={() => router.push(`/home/make-pass/wire/currency?country=${encodeURIComponent(selected!.name)}&countryCode=${selected!.code}`)}
            className="flex-1 rounded-full bg-onb2b-blue-950 font-semibold tracking-wide hover:bg-onb2b-blue-1000 cursor-pointer"
          >
            NEXT

@@ -7,7 +7,6 @@ import {
   Landmark, 
   QrCode,
   Activity,
-  ArrowLeft,
   MoreVertical
 } from "lucide-react";
 import Link from "next/link";
@@ -24,7 +23,7 @@ import PageBackHeader from "@/components/admin/page-back-header"
 
 const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 
-type BankAccountDto = {
+type AccDto = {
   advPlusAccountNumber: string;
   routingNumber: string;
   paperElectronicNumber: string;
@@ -73,7 +72,7 @@ async function getUser(id: string, cookie: string) {
   return res.json();
 }
 
-async function getBankAccount(id: string, cookie: string): Promise<BankAccountDto | null> {
+async function getAcc(id: string, cookie: string): Promise<AccDto | null> {
   const res = await fetch(`${baseUrl}/api/admin/users/${id}/bank-account`, {
     cache: "no-store",
     headers: {
@@ -84,7 +83,7 @@ async function getBankAccount(id: string, cookie: string): Promise<BankAccountDt
     if (res.status === 404) return null;
     throw new Error(`Failed to fetch bank account ${res.status}`);
   }
-  return res.json() as Promise<BankAccountDto>;
+  return res.json() as Promise<AccDto>;
 }
 
 async function getCreditCard(id: string, cookie: string): Promise<CreditCardDto | null> {
@@ -156,9 +155,9 @@ export default async function UserDetailPage({
   const { id } = await params;
   const hdrs = await headers();
   const cookie = hdrs.get("cookie") ?? "";
-  const [user, bankAccountRaw, creditCardRaw, recentTransactions, recentCardTransactions] = await Promise.all([
+  const [user, AccRaw, creditCardRaw, recentTransactions, recentCardTransactions] = await Promise.all([
     getUser(id, cookie),
-    getBankAccount(id, cookie),
+    getAcc(id, cookie),
     getCreditCard(id, cookie),
     getRecentBankTransactions(id, cookie),
     getRecentCardTransactions(id, cookie),
@@ -168,7 +167,7 @@ export default async function UserDetailPage({
     return notFound();
   }
 
-  const bankAccount = bankAccountRaw ?? {
+  const myAcc = AccRaw ?? {
     advPlusAccountNumber: "",
     routingNumber: "",
     paperElectronicNumber: "",
@@ -182,7 +181,7 @@ export default async function UserDetailPage({
     limit: 0,
     expiryDate: "—",
   };
-  const accountNumber = bankAccount.advPlusAccountNumber ?? "";
+  const accountNumber = myAcc.advPlusAccountNumber ?? "";
 
   return (
     <div className="space-y-6 pb-8">
@@ -279,7 +278,7 @@ export default async function UserDetailPage({
           <CardContent className="space-y-4">
             <div className="flex justify-between items-center">
               <span className="text-2xl font-bold text-onb2b-blue-800">
-                {formatCurrency(bankAccount.balance)}
+                {formatCurrency(myAcc.balance)}
               </span>
               <Badge variant="secondary" className="bg-onb2b-blue-50 text-onb2b-blue-700">
                 Available Balance
@@ -298,15 +297,15 @@ export default async function UserDetailPage({
               </div>
               <div className="space-y-1">
                 <p className="text-xs text-muted-foreground">Routing Number</p>
-                <p className="font-mono text-sm">{bankAccount.routingNumber}</p>
+                <p className="font-mono text-sm">{myAcc.routingNumber}</p>
               </div>
               <div className="space-y-1">
                 <p className="text-xs text-muted-foreground">Paper & Electronic</p>
-                <p className="font-mono text-sm">{bankAccount.paperElectronicNumber}</p>
+                <p className="font-mono text-sm">{myAcc.paperElectronicNumber}</p>
               </div>
               <div className="space-y-1">
                 <p className="text-xs text-muted-foreground">Wires Number</p>
-                <p className="font-mono text-sm">{bankAccount.wiresAccountNumber}</p>
+                <p className="font-mono text-sm">{myAcc.wiresAccountNumber}</p>
               </div>
             </div>
           </CardContent>

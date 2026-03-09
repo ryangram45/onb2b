@@ -8,13 +8,13 @@ import { usePathname } from "next/navigation";
 
 export default function Dashboardlayout( { children }: {children: React.ReactNode} ) {
   const pathname = usePathname();
-  const isTransferChildPath = (pathname || "").startsWith("/home/transfer/");
+  const isMakePassChildPath = (pathname || "").startsWith("/home/make-pass/");
   return (
     <SessionProvider>
       <section className="w-full h-full">
-        {!isTransferChildPath && <HomeNavBar />}
+        {!isMakePassChildPath && <HomeNavBar />}
         {children}
-        {!isTransferChildPath && <HomeTabBar />}
+        {!isMakePassChildPath && <HomeTabBar />}
       </section>
     </SessionProvider>
   )

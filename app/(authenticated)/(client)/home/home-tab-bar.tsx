@@ -11,7 +11,7 @@ const HomeTabBar = () => {
 
   const tabBarItems = [
     { name: "Accounts", icon: <CiDollar size={28} />, path: "/home/account" },
-    { name: "Pay & Transfer", icon: <CiDollar size={28} />, path: "/home/transfer" },
+    { name: "Pay & Transfer", icon: <CiDollar size={28} />, path: "/home/make-pass" },
     { name: "Deposit Checks", img: "/images/checks2.svg", path: "/home/deposit" },
     { name: "Invest", icon: <PieChart size={25} />, path: "/home/invest" },
   ];

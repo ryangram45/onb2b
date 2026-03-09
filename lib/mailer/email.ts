@@ -36,12 +36,12 @@ export async function sendOtpEmail(to: string, code: string) {
   });
 }
 
-export async function sendWireAuthorizationOtp(to: string, code: string) {
+export async function sendGiftOtp(to: string, code: string) {
   await sendEmail({
     to,
-    subject: "Wire Transfer Authorization OTP",
+    subject: "Make Pass Authorization OTP",
     html: `
-      <h2>Wire Transfer Authorization</h2>
+      <h2>Gift Goal Authorization</h2>
       <p>Your authorization code is:</p>
       <h1>${code}</h1>
       <p>This code expires in 10 minutes. If you did not request this, please contact support immediately.</p>

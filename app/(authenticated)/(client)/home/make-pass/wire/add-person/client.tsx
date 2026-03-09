@@ -1,18 +1,11 @@
  "use client";
  
  import { useMemo, useState } from "react";
- import { Suspense } from "react";
- import AddPersonClient from "./client";
  import { useRouter, useSearchParams } from "next/navigation";
  import { Button } from "@/components/ui/button";
  import { Input } from "@/components/ui/input";
  
- export default function AddPersonPage() {
-   return (
-     <Suspense fallback={<div />} >
-       <AddPersonClient />
-     </Suspense>
-   );
+ export default function AddPersonClient() {
    const router = useRouter();
    const searchParams = useSearchParams();
  
@@ -25,7 +18,7 @@
    const [enteredLastName, setEnteredLastName] = useState("");
    const [enteredNickname, setEnteredNickname] = useState("");
    const [enteredRecipientAddress, setEnteredRecipientAddress] = useState("");
-  const [enteredStateName, setEnteredStateName] = useState("");
+   const [enteredStateName, setEnteredStateName] = useState("");
    const [enteredCityName, setEnteredCityName] = useState("");
    const [enteredZipPostalCode, setEnteredZipPostalCode] = useState("");
  
@@ -36,7 +29,7 @@
      const params = new URLSearchParams();
      if (selectedCountryName) params.set("country", selectedCountryName);
      if (selectedCurrencyCode) params.set("currency", selectedCurrencyCode);
-     router.push(`/home/transfer/wire/account-type?${params.toString()}`);
+     router.push(`/home/make-pass/wire/account-type?${params.toString()}`);
    };
  
    const handleNextClick = () => {
@@ -50,13 +43,13 @@
      params.set("lastName", enteredLastName);
      if (enteredNickname) params.set("nickName", enteredNickname);
      params.set("recipientAddress", enteredRecipientAddress);
-    if (enteredStateName) params.set("state", enteredStateName);
+     if (enteredStateName) params.set("state", enteredStateName);
      params.set("city", enteredCityName);
      params.set("zipPostalCode", enteredZipPostalCode);
      const nextPath =
        selectedCountryName === "United States"
-         ? "/home/transfer/wire/domestic-transfer-details"
-         : "/home/transfer/wire/bank-details";
+         ? "/home/make-pass/wire/domestic-details"
+         : "/home/make-pass/wire/details";
      router.push(`${nextPath}?${params.toString()}`);
    };
  
@@ -109,15 +102,15 @@
                className="w-52 text-right border-0 rounded-none shadow-none outline-none focus-visible:ring-0 focus-visible:border-0 bg-transparent placeholder:text-onb2b-blue-950 placeholder:font-medium caret-onb2b-blue-950"
              />
            </div>
-          <div className="flex items-center justify-between py-3">
-            <span className="text-[0.98rem] text-gray-900">State</span>
-            <Input
-              value={enteredStateName}
-              onChange={(e) => setEnteredStateName(e.target.value)}
-              placeholder="Enter state"
-              className="w-52 text-right border-0 rounded-none shadow-none outline-none focus-visible:ring-0 focus-visible:border-0 bg-transparent placeholder:text-onb2b-blue-950 placeholder:font-medium caret-onb2b-blue-950"
-            />
-          </div>
+           <div className="flex items-center justify-between py-3">
+             <span className="text-[0.98rem] text-gray-900">State</span>
+             <Input
+               value={enteredStateName}
+               onChange={(e) => setEnteredStateName(e.target.value)}
+               placeholder="Enter state"
+               className="w-52 text-right border-0 rounded-none shadow-none outline-none focus-visible:ring-0 focus-visible:border-0 bg-transparent placeholder:text-onb2b-blue-950 placeholder:font-medium caret-onb2b-blue-950"
+             />
+           </div>
            <div className="flex items-center justify-between py-3">
              <span className="text-[0.98rem] text-gray-900">City</span>
              <Input

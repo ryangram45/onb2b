@@ -44,7 +44,7 @@
      if (enteredStateName) params.set("state", enteredStateName);
      if (enteredCityName) params.set("city", enteredCityName);
      if (enteredZipPostalCode) params.set("zipPostalCode", enteredZipPostalCode);
-     router.push(`/home/transfer/wire/add-person?${params.toString()}`);
+     router.push(`/home/make-pass/wire/add-person?${params.toString()}`);
    };
  
    const handleNextClick = () => {
@@ -63,7 +63,7 @@
      if (enteredZipPostalCode) params.set("zipPostalCode", enteredZipPostalCode);
      params.set("swiftBic", enteredSwiftBicCode);
      params.set("recipientAccountNumber", enteredRecipientAccountNumber);
-     router.push(`/home/transfer/wire/send-money?${params.toString()}`);
+     router.push(`/home/make-pass/wire/send?${params.toString()}`);
    };
  
    return (

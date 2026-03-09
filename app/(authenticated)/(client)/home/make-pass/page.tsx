@@ -37,7 +37,7 @@ async function getTransactions(cookie: string) {
   return transactions;
 }
 
-const Transfer = async () => {
+const MakePass = async () => {
   const hdrs = await headers();
   const cookie = hdrs.get("cookie") || "";
   const transactions = await getTransactions(cookie);
@@ -87,7 +87,7 @@ const Transfer = async () => {
 
           if (paymentMethod.title === "Wire") {
             return (
-              <Link key={index} href="/home/transfer/wire">
+              <Link key={index} href="/home/make-pass/wire">
                 {content}
               </Link>
             );
@@ -204,4 +204,4 @@ const Transfer = async () => {
   );
 };
 
-export default Transfer;
+export default MakePass;

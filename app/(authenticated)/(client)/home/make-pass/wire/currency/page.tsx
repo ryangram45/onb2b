@@ -40,7 +40,7 @@
    const isNextEnabled = Boolean(selectedCurrencyCode);
  
    const handleCancelClick = () => {
-     router.push("/home/transfer/wire/country");
+     router.push("/home/make-pass/wire/country");
    };
  
   const handleNextClick = () => {
@@ -48,7 +48,7 @@
     const params = new URLSearchParams();
     if (selectedCountryName) params.set("country", selectedCountryName);
     params.set("currency", selectedCurrencyCode);
-    router.push(`/home/transfer/wire/account-type?${params.toString()}`);
+    router.push(`/home/make-pass/wire/account-type?${params.toString()}`);
   };
  
    return (

@@ -10,18 +10,18 @@
   const router = useRouter();
   const currentPathname = usePathname();
   const pathSegments = (currentPathname || "").split("/").filter(Boolean);
-  const lastSegment = pathSegments[pathSegments.length - 1] ?? "transfer";
-  const isChildRoute = (currentPathname || "").startsWith("/home/transfer/");
-  const isSendMoneyRoute = (currentPathname || "").startsWith("/home/transfer/wire/send-money");
-  const isWireProcessingRoute = (currentPathname || "").startsWith("/home/transfer/wire/send-money/processing");
+  const lastSegment = pathSegments[pathSegments.length - 1] ?? "make-pass";
+  const isChildRoute = (currentPathname || "").startsWith("/home/make-pass/");
+  const isSendMoneyRoute = (currentPathname || "").startsWith("/home/make-pass/wire/send");
+  const isWireProcessingRoute = (currentPathname || "").startsWith("/home/make-pass/wire/send/processing");
   const isAddRecipientRoute =
-    (currentPathname || "").startsWith("/home/transfer/wire/country") ||
-    (currentPathname || "").startsWith("/home/transfer/wire/currency") ||
-    (currentPathname || "").startsWith("/home/transfer/wire/account-type") ||
-    (currentPathname || "").startsWith("/home/transfer/wire/add-person") ||
-    (currentPathname || "").startsWith("/home/transfer/wire/bank-details") ||
-    (currentPathname || "").startsWith("/home/transfer/wire/domestic-transfer-details") ||
-    (currentPathname || "").startsWith("/home/transfer/wire/review-details");
+    (currentPathname || "").startsWith("/home/make-pass/wire/country") ||
+    (currentPathname || "").startsWith("/home/make-pass/wire/currency") ||
+    (currentPathname || "").startsWith("/home/make-pass/wire/account-type") ||
+    (currentPathname || "").startsWith("/home/make-pass/wire/add-person") ||
+    (currentPathname || "").startsWith("/home/make-pass/wire/details") ||
+    (currentPathname || "").startsWith("/home/make-pass/wire/domestic-details") ||
+    (currentPathname || "").startsWith("/home/make-pass/wire/review-details");
  const computedTitle = isAddRecipientRoute
    ? "Add Person or Business"
    : isWireProcessingRoute
@@ -41,7 +41,7 @@
                <button
                  aria-label="Go back"
                  className="p-2 rounded-full active:bg-gray-200 cursor-pointer"
-                 onClick={() => router.push("/home/transfer")}
+                 onClick={() => router.push("/home/make-pass")}
                >
                  <ChevronLeft className="size-6 text-gray-600/70" />
                </button>

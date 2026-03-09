@@ -87,12 +87,11 @@ export default function WireOtpClient() {
         toast.error("Invalid or expired code");
         return;
       }
-      // Create activity to persist wire transfer event and get confirmation number
       const createActivityResponse = await fetch("/api/me/activities", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          type: "wire_transfer",
+          type: "Gift_Goal",
           amount: Number(amountParam),
           currency,
           recipientId,
@@ -117,7 +116,7 @@ export default function WireOtpClient() {
       if (accountLabel) params.set("accountLabel", accountLabel);
       if (note) params.set("note", note);
       if (confirmationNumber) params.set("confirmationNumber", confirmationNumber);
-      router.push(`/home/transfer/wire/send-money/processing?${params.toString()}`);
+      router.push(`/home/make-pass/wire/send/processing?${params.toString()}`);
     } catch {
       toast.error("Verification failed");
     } finally {

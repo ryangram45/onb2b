@@ -39,7 +39,7 @@ export const RecipientList = ({ recipients, selectedId, onSelectId }: { recipien
         <Button
           variant="whiteGhost"
           className="no-underline font-semibold text-base cursor-pointer"
-          onClick={() => router.push("/home/transfer/wire/country")}
+          onClick={() => router.push("/home/make-pass/wire/country")}
         >
           Add new recipient
           <span className="bg-onb2b-blue-800 rounded-full p-0.5 ml-2">
