@@ -16,7 +16,7 @@ export function AuthWrapper({
   showLoginHeader = true,
 }: AuthWrapperProps) {
   return (
-    <section className="flex flex-col container mx-auto inset-x-0 md:max-w-[60rem]">
+    <section className="flex flex-col min-h-screen container mx-auto inset-x-0 md:max-w-[60rem]">
       {/* Header */}
       {showLoginHeader && (
         <div className="container mx-auto py-4 px-5 md:px-8 flex justify-between items-center">

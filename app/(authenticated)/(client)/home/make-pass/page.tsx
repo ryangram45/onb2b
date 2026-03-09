@@ -173,7 +173,7 @@ const MakePass = async () => {
           ))}
         </div>
 
-        <div className="-ml-4 sm:ml-0">
+        <div className="-ml-2 sm:ml-0">
           <Agreement />
         </div>
 
